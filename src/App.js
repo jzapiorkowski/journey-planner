@@ -3,6 +3,7 @@ import './App.css';
 import AddressForm from './components/addressForm/AddressForm';
 import LinksBanner from './components/linksBanner/LinksBanner';
 import Map from './components/map/Map';
+import AllRoutesContextProvider from './contexts/AllRoutesContext';
 import CurrentRouteContextProvider from './contexts/CurrentRouteContext';
 
 function App() {
@@ -12,11 +13,13 @@ function App() {
         <Link to='/'>JOURNEY COST CALCULATOR</Link>
       </header>
       <CurrentRouteContextProvider>
-        <Routes>
-          <Route path='/' element={<LinksBanner />} />
-          <Route path='find-addresses' element={<AddressForm />} />
-          <Route path='my-route' element={<Map />} />
-        </Routes>
+        <AllRoutesContextProvider>
+          <Routes>
+            <Route path='/' element={<LinksBanner />} />
+            <Route path='find-addresses' element={<AddressForm />} />
+            <Route path='my-route' element={<Map />} />
+          </Routes>
+        </AllRoutesContextProvider>
       </CurrentRouteContextProvider>
     </div>
   );
