@@ -3,9 +3,11 @@ import { Formik, Form, Field } from 'formik';
 import ForwardGeocode from '../../utils/ForwardGeocode';
 import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
 import { useNavigate } from 'react-router-dom';
+import { addNewRouteContext } from '../../contexts/AllRoutesContext';
 
 function AddressForm() {
   const setCurrentRoute = useContext(setCurrentRouteContext);
+  const addNewRoute = useContext(addNewRouteContext);
 
   const navigate = useNavigate();
 
@@ -42,6 +44,10 @@ function AddressForm() {
         Promise.all([originPromise, destinationPromise]).then(() => {
           console.log(originAddressCoordinates, destinationAddressCoordinates);
           setCurrentRoute([
+            originAddressCoordinates,
+            destinationAddressCoordinates,
+          ]);
+          addNewRoute([
             originAddressCoordinates,
             destinationAddressCoordinates,
           ]);
