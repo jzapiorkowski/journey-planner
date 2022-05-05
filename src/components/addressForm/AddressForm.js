@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
 import ForwardGeocode from '../../utils/ForwardGeocode';
+import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
 
-function AddressForm({
-  setOriginAddressCoordinates,
-  setDestinationAddressCoordinates,
-}) {
+function AddressForm() {
+  const setCurrentRoute = useContext(setCurrentRouteContext);
+
   return (
     <Formik
       initialValues={{
@@ -23,11 +23,25 @@ function AddressForm({
         },
       }}
       onSubmit={(values) => {
-        ForwardGeocode(values.origin).then((resolvedAddress) => {
-          setOriginAddressCoordinates(resolvedAddress);
-        });
-        ForwardGeocode(values.destination).then((resolvedAddress) => {
-          setDestinationAddressCoordinates(resolvedAddress);
+        let originAddressCoordinates;
+        let destinationAddressCoordinates;
+
+        const originPromise = ForwardGeocode(values.origin).then(
+          (resolvedAddress) => {
+            originAddressCoordinates = resolvedAddress;
+          }
+        );
+        const destinationPromise = ForwardGeocode(values.destination).then(
+          (resolvedAddress) => {
+            destinationAddressCoordinates = resolvedAddress;
+          }
+        );
+        Promise.all([originPromise, destinationPromise]).then(() => {
+          console.log(originAddressCoordinates, destinationAddressCoordinates);
+          setCurrentRoute([
+            originAddressCoordinates,
+            destinationAddressCoordinates,
+          ]);
         });
       }}
     >
