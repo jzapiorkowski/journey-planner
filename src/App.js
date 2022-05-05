@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import AddressForm from './components/addressForm/AddressForm';
 import LinksBanner from './components/linksBanner/LinksBanner';
@@ -8,7 +8,9 @@ import CurrentRouteContextProvider from './contexts/CurrentRouteContext';
 function App() {
   return (
     <div className='App'>
-      <header>JOURNEY COST CALCULATOR</header>
+      <header>
+        <Link to='/'>JOURNEY COST CALCULATOR</Link>
+      </header>
       <CurrentRouteContextProvider>
         <Routes>
           <Route path='/' element={<LinksBanner />} />
