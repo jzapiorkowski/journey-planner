@@ -7,7 +7,10 @@ function AllRoutesList() {
 
   const routeCards = allRoutes.map((trip, index) => {
     return (
-      <Link to={`/route/${index}`}>
+      <Link
+        to={`/route/${index}`}
+        state={{ originGeolocation: trip[0], destinationGeolocation: trip[1] }}
+      >
         <div>
           <h4>Trip {index + 1}</h4>
         </div>
