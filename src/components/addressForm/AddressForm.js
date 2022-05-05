@@ -1,7 +1,11 @@
 import React from 'react';
 import { Formik, Form, Field } from 'formik';
+import ForwardGeocode from '../../utils/ForwardGeocode';
 
-function AddressForm() {
+function AddressForm({
+  setOriginAddressCoordinates,
+  setDestinationAddressCoordinates,
+}) {
   return (
     <Formik
       initialValues={{
@@ -19,7 +23,12 @@ function AddressForm() {
         },
       }}
       onSubmit={(values) => {
-        alert(JSON.stringify(values, null, 2));
+        ForwardGeocode(values.origin).then((resolvedAddress) => {
+          setOriginAddressCoordinates(resolvedAddress);
+        });
+        ForwardGeocode(values.destination).then((resolvedAddress) => {
+          setDestinationAddressCoordinates(resolvedAddress);
+        });
       }}
     >
       <Form>
