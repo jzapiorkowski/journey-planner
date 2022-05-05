@@ -9,16 +9,15 @@ function ForwardGeocode(address) {
     .filter((notEmpty) => notEmpty)
     .join('+');
 
-  geolocationClient
+  return geolocationClient
     .get(`/${formattedAddress}.json?limit=1&access_token=${personalToken}`)
     .then((response) => {
       coordinates = response.data.features[0].geometry.coordinates.reverse();
+      return coordinates;
     })
     .catch((error) => {
       console.log(error);
     });
-
-  return coordinates;
 }
 
 export default ForwardGeocode;
