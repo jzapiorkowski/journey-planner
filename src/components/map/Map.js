@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import RoutingMachine from '../routingMachine/RoutingMachine';
@@ -7,6 +7,8 @@ import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 
 function Map() {
   const routeCoordinates = useContext(currentRouteContext);
+
+  const [routeInstructions, setRouteInstructions] = useState([]);
 
   return (
     <div>
@@ -23,8 +25,14 @@ function Map() {
         <RoutingMachine
           originAddressCoordinates={routeCoordinates[0]}
           destinationAddressCoordinates={routeCoordinates[1]}
+          setRouteInstructions={setRouteInstructions}
         />
       </MapContainer>
+      <ul>
+        {routeInstructions.map((instruction) => {
+          return <li>{instruction}</li>;
+        })}
+      </ul>
     </div>
   );
 }

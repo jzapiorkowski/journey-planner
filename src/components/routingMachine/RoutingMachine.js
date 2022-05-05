@@ -5,6 +5,7 @@ import 'leaflet-routing-machine';
 const createRoutineMachineLayer = ({
   originAddressCoordinates,
   destinationAddressCoordinates,
+  setRouteInstructions,
 }) => {
   const instance = L.Routing.control({
     waypoints: [
@@ -28,6 +29,19 @@ const createRoutineMachineLayer = ({
     fitSelectedRoutes: true,
     showAlternatives: false,
   });
+
+  instance.on(
+    'routeselected',
+    function (routes) {
+      const routeInstructions = routes.route.instructions.map((element) => {
+        return [
+          element.text + ' ' + Math.round(element.distance / 50) * 500 + 'm',
+        ];
+      });
+      setRouteInstructions(routeInstructions);
+    },
+    this
+  );
 
   return instance;
 };
