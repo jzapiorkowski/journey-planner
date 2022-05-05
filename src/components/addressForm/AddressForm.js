@@ -2,9 +2,12 @@ import React, { useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
 import ForwardGeocode from '../../utils/ForwardGeocode';
 import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
+import { useNavigate } from 'react-router-dom';
 
 function AddressForm() {
   const setCurrentRoute = useContext(setCurrentRouteContext);
+
+  const navigate = useNavigate();
 
   return (
     <Formik
@@ -42,6 +45,7 @@ function AddressForm() {
             originAddressCoordinates,
             destinationAddressCoordinates,
           ]);
+          navigate('/my-route');
         });
       }}
     >
