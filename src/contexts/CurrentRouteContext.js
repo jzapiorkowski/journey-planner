@@ -4,11 +4,11 @@ export const currentRouteContext = createContext();
 export const setCurrentRouteContext = createContext();
 
 function CurrentRouteContextProvider(props) {
-  const [currentRoute, setCurrentRoute] = useState([]);
+  const [currentRouteGeolocation, setCurrentRouteGeolocation] = useState([]);
 
   return (
-    <currentRouteContext.Provider value={currentRoute}>
-      <setCurrentRouteContext.Provider value={setCurrentRoute}>
+    <currentRouteContext.Provider value={currentRouteGeolocation}>
+      <setCurrentRouteContext.Provider value={setCurrentRouteGeolocation}>
         {props.children}
       </setCurrentRouteContext.Provider>
     </currentRouteContext.Provider>
