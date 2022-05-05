@@ -4,6 +4,7 @@ import AddressForm from './components/addressForm/AddressForm';
 import AllRoutesList from './components/allRoutesList/AllRoutesList';
 import LinksBanner from './components/linksBanner/LinksBanner';
 import Map from './components/map/Map';
+import ViewRoute from './components/viewRoute/ViewRoute';
 import AllRoutesContextProvider from './contexts/AllRoutesContext';
 import CurrentRouteContextProvider from './contexts/CurrentRouteContext';
 
@@ -20,6 +21,7 @@ function App() {
             <Route path='find-addresses' element={<AddressForm />} />
             <Route path='my-route' element={<Map />} />
             <Route path='my-routes' element={<AllRoutesList />} />
+            <Route path='/route/:routeId' element={<ViewRoute />} />
           </Routes>
         </AllRoutesContextProvider>
       </CurrentRouteContextProvider>
