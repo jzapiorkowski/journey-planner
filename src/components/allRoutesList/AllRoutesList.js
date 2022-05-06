@@ -10,8 +10,9 @@ function AllRoutesList() {
       <Link
         to={`/route/${index}`}
         state={{ originGeolocation: trip[0], destinationGeolocation: trip[1] }}
+        key={index}
       >
-        <div key={index}>
+        <div>
           <h4>Trip {index + 1}</h4>
         </div>
       </Link>
