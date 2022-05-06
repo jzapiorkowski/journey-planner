@@ -4,6 +4,7 @@ import ForwardGeocode from '../../utils/ForwardGeocode';
 import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
 import { useNavigate } from 'react-router-dom';
 import { addNewRouteContext } from '../../contexts/AllRoutesContext';
+import './addressForm.scss';
 
 function AddressForm() {
   const setCurrentRoute = useContext(setCurrentRouteContext);
@@ -56,31 +57,37 @@ function AddressForm() {
       }}
     >
       <Form>
-        <h5>Origin Address</h5>
-        <label htmlFor='country'>Country</label>
-        <Field name='origin.country' type='text' />
+        <div className='address-form' id='origin'>
+          <h2>Origin Address</h2>
 
-        <label htmlFor='city'>City</label>
-        <Field name='origin.city' type='text' />
+          <label htmlFor='country'>Country</label>
+          <Field name='origin.country' type='text' />
 
-        <label htmlFor='street'>Street</label>
-        <Field name='origin.street' type='text' />
+          <label htmlFor='city'>City</label>
+          <Field name='origin.city' type='text' />
 
-        <label htmlFor='streetNumber'>Street Number</label>
-        <Field name='origin.streetNumber' type='text' />
+          <label htmlFor='street'>Street</label>
+          <Field name='origin.street' type='text' />
 
-        <h5>Destination Address</h5>
-        <label htmlFor='country'>Country</label>
-        <Field name='destination.country' type='text' />
+          <label htmlFor='streetNumber'>Street Number</label>
+          <Field name='origin.streetNumber' type='text' />
+        </div>
 
-        <label htmlFor='city'>City</label>
-        <Field name='destination.city' type='text' />
+        <div className='address-form' id='destination'>
+          <h2>Destination Address</h2>
 
-        <label htmlFor='street'>Street</label>
-        <Field name='destination.street' type='text' />
+          <label htmlFor='country'>Country</label>
+          <Field name='destination.country' type='text' />
 
-        <label htmlFor='streetNumber'>Street Number</label>
-        <Field name='destination.streetNumber' type='text' />
+          <label htmlFor='city'>City</label>
+          <Field name='destination.city' type='text' />
+
+          <label htmlFor='street'>Street</label>
+          <Field name='destination.street' type='text' />
+
+          <label htmlFor='streetNumber'>Street Number</label>
+          <Field name='destination.streetNumber' type='text' />
+        </div>
 
         <button type='submit'>Submit</button>
       </Form>
