@@ -13,7 +13,6 @@ function ViewRoute() {
   const [destinationPlaceName, setDestinationPlaceName] = useState([]);
 
   useEffect(() => {
-    console.log(routeCoordinates, 'origin');
     ReverseGeocode(originGeolocation || routeCoordinates[0]).then(
       (response) => {
         const tmp = response.split(', ');
