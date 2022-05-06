@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 
-function ViewRoute({
+function AddressNames({
   originAddressCoordinates,
   destinationAddressCoordinates,
 }) {
@@ -38,4 +38,4 @@ function ViewRoute({
   );
 }
 
-export default ViewRoute;
+export default AddressNames;

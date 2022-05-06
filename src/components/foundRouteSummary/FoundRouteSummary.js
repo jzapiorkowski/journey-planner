@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Map from '../map/Map';
 import { currentRouteContext } from './../../contexts/CurrentRouteContext';
-import ViewRoute from '../viewRoute/ViewRoute';
+import AddressNames from '../viewRoute/ViewRoute';
 import { useLocation } from 'react-router-dom';
 
 function FoundRouteSummary() {
@@ -16,7 +16,7 @@ function FoundRouteSummary() {
   return (
     <div>
       <h1>Route Summary</h1>
-      <ViewRoute
+      <AddressNames
         originAddressCoordinates={originGeolocation || routeCoordinates[0]}
         destinationAddressCoordinates={
           destinationGeolocation || routeCoordinates[1]
