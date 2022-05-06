@@ -1,5 +1,5 @@
 import { Route, Routes, Link } from 'react-router-dom';
-import './App.css';
+import './app.scss';
 import AddressForm from './components/addressForm/AddressForm';
 import AllRoutesList from './components/allRoutesList/AllRoutesList';
 import FoundRouteSummary from './components/foundRouteSummary/FoundRouteSummary';
