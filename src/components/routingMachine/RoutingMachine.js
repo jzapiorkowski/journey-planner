@@ -6,6 +6,7 @@ const createRoutineMachineLayer = ({
   originAddressCoordinates,
   destinationAddressCoordinates,
   setRouteInstructions,
+  setTotalDistance,
 }) => {
   const instance = L.Routing.control({
     waypoints: [
@@ -33,6 +34,8 @@ const createRoutineMachineLayer = ({
   instance.on(
     'routeselected',
     function (routes) {
+      setTotalDistance(routes.route.summary.totalDistance);
+
       const routeInstructions = routes.route.instructions.map((element) => {
         return [
           element.text + ' ' + Math.round(element.distance / 50) * 500 + 'm',
