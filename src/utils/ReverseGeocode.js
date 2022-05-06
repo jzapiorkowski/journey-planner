@@ -3,7 +3,8 @@ import geolocationClient from '../api/GeolocationClient';
 function ReverseGeocode(address) {
   const personalToken = ''; // put your mapbox personal access token here
 
-  const formattedAddress = address.reverse().join(',');
+  let formattedAddress = [...address];
+  formattedAddress = formattedAddress.reverse().join(',');
 
   return geolocationClient
     .get(`/${formattedAddress}.json?access_token=${personalToken}`)
