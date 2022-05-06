@@ -1,31 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import ReverseGeocode from '../../utils/ReverseGeocode';
-import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 
-function ViewRoute() {
-  const routeCoordinates = useContext(currentRouteContext);
-
-  const location = useLocation();
-  const { originGeolocation, destinationGeolocation } = location.state || {};
-
+function ViewRoute({
+  originAddressCoordinates,
+  destinationAddressCoordinates,
+}) {
   const [originPlaceName, setOriginPlaceName] = useState([]);
   const [destinationPlaceName, setDestinationPlaceName] = useState([]);
 
   useEffect(() => {
-    ReverseGeocode(originGeolocation || routeCoordinates[0]).then(
-      (response) => {
-        const tmp = response.split(', ');
-        setOriginPlaceName(tmp);
-      }
-    );
+    ReverseGeocode(originAddressCoordinates).then((response) => {
+      const tmp = response.split(', ');
+      setOriginPlaceName(tmp);
+    });
 
-    ReverseGeocode(destinationGeolocation || routeCoordinates[1]).then(
-      (response) => {
-        const tmp = response.split(', ');
-        setDestinationPlaceName(tmp);
-      }
-    );
+    ReverseGeocode(destinationAddressCoordinates).then((response) => {
+      const tmp = response.split(', ');
+      setDestinationPlaceName(tmp);
+    });
   }, []);
 
   return (
