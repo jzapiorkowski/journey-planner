@@ -1,6 +1,10 @@
 .addresses {
   display: flex;
   gap: 50px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 20px;
+  }
   .address {
     text-align: center;
     h2 {
