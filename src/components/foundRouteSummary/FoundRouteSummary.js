@@ -4,6 +4,7 @@ import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 import AddressNames from '../addressNames/AddressNames';
 import { useLocation } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
+import generatePDF from '../../utils/GeneratePDF';
 
 function FoundRouteSummary() {
   const routeCoordinates = useContext(currentRouteContext);
@@ -33,9 +34,19 @@ function FoundRouteSummary() {
     );
   }, []);
 
+  const getPDF = () => {
+    generatePDF(
+      originPlaceName,
+      destinationPlaceName,
+      totalDistance,
+      routeInstructions
+    );
+  };
+
   return (
     <div>
       <h1>Route Summary</h1>
+      <button onClick={getPDF}>generate PDF</button>
       <AddressNames
         originPlaceName={originPlaceName}
         destinationPlaceName={destinationPlaceName}
