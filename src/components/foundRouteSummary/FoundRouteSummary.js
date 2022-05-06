@@ -52,11 +52,6 @@ function FoundRouteSummary() {
         destinationPlaceName={destinationPlaceName}
       />
       <p>Your route is {totalDistance} meters long</p>
-      <ul>
-        {routeInstructions.map((instruction, index) => {
-          return <li key={index}>{instruction}</li>;
-        })}
-      </ul>
       <Map
         originAddressCoordinates={originGeolocation || routeCoordinates[0]}
         destinationAddressCoordinates={
