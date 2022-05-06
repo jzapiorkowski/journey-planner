@@ -11,7 +11,7 @@ function AllRoutesList() {
         to={`/route/${index}`}
         state={{ originGeolocation: trip[0], destinationGeolocation: trip[1] }}
       >
-        <div>
+        <div key={index}>
           <h4>Trip {index + 1}</h4>
         </div>
       </Link>
