@@ -52,7 +52,7 @@ function FoundRouteSummary() {
         destinationPlaceName={destinationPlaceName}
       />
       <p className='distance'>Your route is {totalDistance} meters long</p>
-      <button onClick={getPDF}>generate PDF</button>
+      <button onClick={getPDF}>GENERATE PDF</button>
       <Map
         originAddressCoordinates={originGeolocation || routeCoordinates[0]}
         destinationAddressCoordinates={
