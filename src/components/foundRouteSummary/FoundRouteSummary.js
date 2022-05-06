@@ -47,12 +47,12 @@ function FoundRouteSummary() {
   return (
     <div className='route-summary'>
       <h1>Route Summary</h1>
-      <button onClick={getPDF}>generate PDF</button>
       <AddressNames
         originPlaceName={originPlaceName}
         destinationPlaceName={destinationPlaceName}
       />
       <p className='distance'>Your route is {totalDistance} meters long</p>
+      <button onClick={getPDF}>generate PDF</button>
       <Map
         originAddressCoordinates={originGeolocation || routeCoordinates[0]}
         destinationAddressCoordinates={
