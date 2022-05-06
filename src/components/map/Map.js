@@ -3,13 +3,13 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import RoutingMachine from '../routingMachine/RoutingMachine';
 import 'leaflet/dist/images/marker-shadow.png';
-import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 
-function Map() {
-  const routeCoordinates = useContext(currentRouteContext);
-
-  const [routeInstructions, setRouteInstructions] = useState([]);
-
+function Map({
+  originAddressCoordinates,
+  destinationAddressCoordinates,
+  setTotalDistance,
+  setRouteInstructions,
+}) {
   return (
     <div>
       <MapContainer
@@ -23,16 +23,12 @@ function Map() {
           url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         />
         <RoutingMachine
-          originAddressCoordinates={routeCoordinates[0]}
-          destinationAddressCoordinates={routeCoordinates[1]}
+          originAddressCoordinates={originAddressCoordinates}
+          destinationAddressCoordinates={destinationAddressCoordinates}
           setRouteInstructions={setRouteInstructions}
+          setTotalDistance={setTotalDistance}
         />
       </MapContainer>
-      <ul>
-        {routeInstructions.map((instruction) => {
-          return <li>{instruction}</li>;
-        })}
-      </ul>
     </div>
   );
 }
