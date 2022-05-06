@@ -39,7 +39,6 @@ function generatePDF(
   doc.setFont(undefined, 'normal');
   doc.text(routeInstructions, 20, 150);
 
-  // doc.output('dataurlnewwindow');
   doc.save('a4.pdf');
   return doc;
 }
