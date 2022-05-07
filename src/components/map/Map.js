@@ -2,7 +2,8 @@ import React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import RoutingMachine from '../routingMachine/RoutingMachine';
-import 'leaflet/dist/images/marker-shadow.png';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css';
+import 'leaflet-defaulticon-compatibility';
 
 function Map({
   originAddressCoordinates,
