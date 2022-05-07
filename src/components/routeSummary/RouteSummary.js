@@ -8,7 +8,7 @@ import './routeSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
 import { allRoutesGeolocationsContext } from '../../contexts/AllRoutesContext';
 
-function FoundRouteSummary() {
+function RouteSummary() {
   const [originPlaceName, setOriginPlaceName] = useState([]);
   const [destinationPlaceName, setDestinationPlaceName] = useState([]);
 
@@ -99,4 +99,4 @@ function FoundRouteSummary() {
   );
 }
 
-export default FoundRouteSummary;
+export default RouteSummary;
