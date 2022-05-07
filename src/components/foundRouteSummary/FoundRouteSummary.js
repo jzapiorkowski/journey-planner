@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Map from '../map/Map';
 import AddressNames from '../addressNames/AddressNames';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 import generatePDF from '../../utils/GeneratePDF';
 import './foundRouteSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
+import { allRoutesGeolocationsContext } from '../../contexts/AllRoutesContext';
 
 function FoundRouteSummary() {
   const [originPlaceName, setOriginPlaceName] = useState([]);
@@ -16,13 +17,18 @@ function FoundRouteSummary() {
 
   const [kilomererCost, setKilomererCost] = useState(0);
 
-  const location = useLocation();
-  const { originGeolocation, destinationGeolocation } = location.state || {};
+  const allRoutes = useContext(allRoutesGeolocationsContext);
+
+  let params = useParams();
+  const id = params.routeId;
 
   const navigate = useNavigate();
 
+  const originGeolocation = allRoutes[id]?.[0];
+  const destinationGeolocation = allRoutes[id]?.[1];
+
   useEffect(() => {
-    if (originGeolocation && destinationGeolocation) {
+    if (allRoutes[id]) {
       ReverseGeocode(originGeolocation)
         .then((response) => {
           const tmp = response.split(', ');
