@@ -11,7 +11,7 @@ function App() {
   return (
     <div className='App'>
       <header>
-        <Link to='/'>JOURNEY COST CALCULATOR</Link>
+        <Link to='/'>JOURNEY PLANNER</Link>
       </header>
       <AllRoutesContextProvider>
         <Routes>
