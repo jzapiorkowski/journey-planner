@@ -23,6 +23,20 @@ function App() {
             <Route path='my-routes' element={<AllRoutesList />} />
             <Route path='/route/:routeId' element={<FoundRouteSummary />} />
             <Route path='route-not-found' element={<RouteNotFound />} />
+            <Route
+              path='*'
+              element={
+                <p
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '50px',
+                    fontSize: '30px',
+                  }}
+                >
+                  Sorry, but we couldn't find the thing you were looking for
+                </p>
+              }
+            />
           </Routes>
         </AllRoutesContextProvider>
       </CurrentRouteContextProvider>
