@@ -22,19 +22,23 @@ function FoundRouteSummary() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    ReverseGeocode(originGeolocation).then((response) => {
-      const tmp = response.split(', ');
-      setOriginPlaceName(tmp);
-    });
-
-    ReverseGeocode(destinationGeolocation)
-      .then((response) => {
+    if (originGeolocation && destinationGeolocation) {
+      ReverseGeocode(originGeolocation).then((response) => {
         const tmp = response.split(', ');
-        setDestinationPlaceName(tmp);
-      })
-      .catch(() => {
-        navigate('/route-not-found');
+        setOriginPlaceName(tmp);
       });
+
+      ReverseGeocode(destinationGeolocation)
+        .then((response) => {
+          const tmp = response.split(', ');
+          setDestinationPlaceName(tmp);
+        })
+        .catch(() => {
+          navigate('/route-not-found');
+        });
+    } else {
+      navigate('/route-not-found');
+    }
   }, []);
 
   const getPDF = () => {
