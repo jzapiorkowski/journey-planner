@@ -43,7 +43,8 @@ function FoundRouteSummary() {
       originPlaceName,
       destinationPlaceName,
       totalDistance,
-      routeInstructions
+      routeInstructions,
+      calculateCost(totalDistance, kilomererCost)
     );
   };
 
