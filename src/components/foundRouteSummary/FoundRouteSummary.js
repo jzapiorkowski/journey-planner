@@ -94,7 +94,7 @@ function FoundRouteSummary() {
         destinationAddressCoordinates={destinationGeolocation}
         setTotalDistance={setTotalDistance}
         setRouteInstructions={setRouteInstructions}
-      ></Map>
+      />
     </div>
   );
 }
