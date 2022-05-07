@@ -1,14 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import ForwardGeocode from '../../utils/ForwardGeocode';
-import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
 import { useNavigate } from 'react-router-dom';
-import { addNewRouteContext } from '../../contexts/AllRoutesContext';
 import './addressForm.scss';
 import * as Yup from 'yup';
+import {
+  allRoutesGeolocationsContext,
+  addNewRouteContext,
+} from '../../contexts/AllRoutesContext';
 
 function AddressForm() {
-  const setCurrentRoute = useContext(setCurrentRouteContext);
+  const allRoutes = useContext(allRoutesGeolocationsContext);
   const addNewRoute = useContext(addNewRouteContext);
 
   const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState(false);
@@ -78,19 +80,14 @@ function AddressForm() {
 
         Promise.all([originPromise, destinationPromise])
           .then(() => {
-            setCurrentRoute([
-              originAddressCoordinates,
-              destinationAddressCoordinates,
-            ]);
+            if (originAddressCoordinates && destinationAddressCoordinates) {
+              addNewRoute([
+                originAddressCoordinates,
+                destinationAddressCoordinates,
+              ]);
 
-            addNewRoute([
-              originAddressCoordinates,
-              destinationAddressCoordinates,
-            ]);
-
-            if (originAddressCoordinates && destinationAddressCoordinates)
-              navigate('/my-route');
-            else {
+              navigate(`/route/${allRoutes.length}`);
+            } else {
               if (!originAddressCoordinates && !destinationAddressCoordinates) {
                 setDisplayWrongOriginAddress(true);
                 setDisplayWrongDestinationAddress(true);
