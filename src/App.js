@@ -17,7 +17,6 @@ function App() {
         <Routes>
           <Route path='/' element={<LinksBanner />} />
           <Route path='find-addresses' element={<AddressForm />} />
-          <Route path='my-route' element={<FoundRouteSummary />} />
           <Route path='my-routes' element={<AllRoutesList />} />
           <Route path='/route/:routeId' element={<RouteSummary />} />
           <Route path='route-not-found' element={<RouteNotFound />} />
