@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import Map from '../map/Map';
 import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 import AddressNames from '../addressNames/AddressNames';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 import generatePDF from '../../utils/GeneratePDF';
 import './foundRouteSummary.scss';
@@ -22,6 +22,8 @@ function FoundRouteSummary() {
   const location = useLocation();
   const { originGeolocation, destinationGeolocation } = location.state || {};
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     ReverseGeocode(originGeolocation || routeCoordinates[0]).then(
       (response) => {
@@ -30,12 +32,14 @@ function FoundRouteSummary() {
       }
     );
 
-    ReverseGeocode(destinationGeolocation || routeCoordinates[1]).then(
-      (response) => {
+    ReverseGeocode(destinationGeolocation || routeCoordinates[1])
+      .then((response) => {
         const tmp = response.split(', ');
         setDestinationPlaceName(tmp);
-      }
-    );
+      })
+      .catch(() => {
+        navigate('/route-not-found');
+      });
   }, []);
 
   const getPDF = () => {
