@@ -29,7 +29,7 @@ function generatePDF(
   doc.text('Distance:', 20, 120);
 
   doc.setFont(undefined, 'normal');
-  doc.text(`${distance} m`, 20, 130);
+  doc.text(`${distance} km`, 20, 130);
 
   routeInstructions = routeInstructions.join('\n');
 
