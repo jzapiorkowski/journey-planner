@@ -34,7 +34,7 @@ const createRoutineMachineLayer = ({
   instance.on(
     'routeselected',
     function (routes) {
-      setTotalDistance(routes.route.summary.totalDistance);
+      setTotalDistance(routes.route.summary.totalDistance / 1000);
 
       const routeInstructions = routes.route.instructions.map((element) => {
         return [
