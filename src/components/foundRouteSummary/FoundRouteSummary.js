@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from '../map/Map';
-import { currentRouteContext } from './../../contexts/CurrentRouteContext';
 import AddressNames from '../addressNames/AddressNames';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
@@ -9,8 +8,6 @@ import './foundRouteSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
 
 function FoundRouteSummary() {
-  const routeCoordinates = useContext(currentRouteContext);
-
   const [originPlaceName, setOriginPlaceName] = useState([]);
   const [destinationPlaceName, setDestinationPlaceName] = useState([]);
 
@@ -25,14 +22,12 @@ function FoundRouteSummary() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    ReverseGeocode(originGeolocation || routeCoordinates[0]).then(
-      (response) => {
-        const tmp = response.split(', ');
-        setOriginPlaceName(tmp);
-      }
-    );
+    ReverseGeocode(originGeolocation).then((response) => {
+      const tmp = response.split(', ');
+      setOriginPlaceName(tmp);
+    });
 
-    ReverseGeocode(destinationGeolocation || routeCoordinates[1])
+    ReverseGeocode(destinationGeolocation)
       .then((response) => {
         const tmp = response.split(', ');
         setDestinationPlaceName(tmp);
@@ -81,10 +76,8 @@ function FoundRouteSummary() {
       </div>
       <button onClick={getPDF}>GENERATE PDF</button>
       <Map
-        originAddressCoordinates={originGeolocation || routeCoordinates[0]}
-        destinationAddressCoordinates={
-          destinationGeolocation || routeCoordinates[1]
-        }
+        originAddressCoordinates={originGeolocation}
+        destinationAddressCoordinates={destinationGeolocation}
         setTotalDistance={setTotalDistance}
         setRouteInstructions={setRouteInstructions}
       ></Map>
