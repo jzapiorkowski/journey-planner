@@ -4,7 +4,8 @@ function generatePDF(
   originAddress,
   destinationAddress,
   distance,
-  routeInstructions
+  routeInstructions,
+  cost
 ) {
   const doc = new jsPDF();
 
@@ -31,13 +32,19 @@ function generatePDF(
   doc.setFont(undefined, 'normal');
   doc.text(`${distance} km`, 20, 130);
 
+  doc.setFont(undefined, 'bold');
+  doc.text('Estimated cost:', 20, 140);
+
+  doc.setFont(undefined, 'normal');
+  doc.text(`${cost}$`, 20, 150);
+
   routeInstructions = routeInstructions.join('\n');
 
   doc.setFont(undefined, 'bold');
-  doc.text('Route instructions:', 20, 140);
+  doc.text('Route instructions:', 20, 160);
 
   doc.setFont(undefined, 'normal');
-  doc.text(routeInstructions, 20, 150);
+  doc.text(routeInstructions, 20, 170);
 
   doc.save('a4.pdf');
   return doc;
