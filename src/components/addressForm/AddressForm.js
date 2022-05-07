@@ -86,12 +86,7 @@ function AddressForm() {
                 destinationAddressCoordinates,
               ]);
 
-              navigate(`/route/${allRoutes.length}`, {
-                state: {
-                  originGeolocation: originAddressCoordinates,
-                  destinationGeolocation: destinationAddressCoordinates,
-                },
-              });
+              navigate(`/route/${allRoutes.length}`);
             } else {
               if (!originAddressCoordinates && !destinationAddressCoordinates) {
                 setDisplayWrongOriginAddress(true);
