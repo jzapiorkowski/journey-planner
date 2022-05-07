@@ -40,9 +40,7 @@ function AddressForm() {
           street: Yup.string()
             .required('Required')
             .max(30, 'Must be 30 characters or less'),
-          streetNumber: Yup.number()
-            .typeError('Must be a number')
-            .max(30, 'Must be 30 characters or less'),
+          streetNumber: Yup.number().typeError('Must be a number'),
         }),
         destination: Yup.object({
           country: Yup.string()
@@ -54,9 +52,7 @@ function AddressForm() {
           street: Yup.string()
             .required('Required')
             .max(30, 'Must be 30 characters or less'),
-          streetNumber: Yup.number()
-            .typeError('Must be a number')
-            .max(30, 'Must be 30 characters or less'),
+          streetNumber: Yup.number().typeError('Must be a number'),
         }),
       })}
       onSubmit={(values) => {
