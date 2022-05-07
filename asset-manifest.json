@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/journey-planner/static/css/main.fcc56201.css",
-    "main.js": "/journey-planner/static/js/main.8d785e98.js",
+    "main.js": "/journey-planner/static/js/main.7dd53723.js",
     "static/js/498.440eb3cf.chunk.js": "/journey-planner/static/js/498.440eb3cf.chunk.js",
     "static/js/703.29dc2e67.chunk.js": "/journey-planner/static/js/703.29dc2e67.chunk.js",
     "static/js/198.ffc4b834.chunk.js": "/journey-planner/static/js/198.ffc4b834.chunk.js",
@@ -10,7 +10,7 @@
     "static/media/banner.jpg": "/journey-planner/static/media/banner.e3ea337cfa04605f5101.jpg",
     "index.html": "/journey-planner/index.html",
     "main.fcc56201.css.map": "/journey-planner/static/css/main.fcc56201.css.map",
-    "main.8d785e98.js.map": "/journey-planner/static/js/main.8d785e98.js.map",
+    "main.7dd53723.js.map": "/journey-planner/static/js/main.7dd53723.js.map",
     "498.440eb3cf.chunk.js.map": "/journey-planner/static/js/498.440eb3cf.chunk.js.map",
     "703.29dc2e67.chunk.js.map": "/journey-planner/static/js/703.29dc2e67.chunk.js.map",
     "198.ffc4b834.chunk.js.map": "/journey-planner/static/js/198.ffc4b834.chunk.js.map",
@@ -18,6 +18,6 @@
   },
   "entrypoints": [
     "static/css/main.fcc56201.css",
-    "static/js/main.8d785e98.js"
+    "static/js/main.7dd53723.js"
   ]
 }
