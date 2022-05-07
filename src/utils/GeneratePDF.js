@@ -38,13 +38,25 @@ function generatePDF(
   doc.setFont(undefined, 'normal');
   doc.text(`${cost}$`, 20, 150);
 
-  routeInstructions = routeInstructions.join('\n');
-
   doc.setFont(undefined, 'bold');
   doc.text('Route instructions:', 20, 160);
 
   doc.setFont(undefined, 'normal');
-  doc.text(routeInstructions, 20, 170);
+  console.log(routeInstructions.length);
+
+  doc.text(routeInstructions.slice(0, 21).join('\n'), 20, 170);
+
+  const numberOfPages = Math.ceil((routeInstructions.length - 21) / 48);
+
+  for (let i = 0; i < numberOfPages; i++) {
+    doc.addPage();
+
+    doc.text(
+      routeInstructions.slice(21 + i * 48, 69 + i * 48).join('\n'),
+      20,
+      20
+    );
+  }
 
   doc.save('a4.pdf');
   return doc;
