@@ -1,4 +1,5 @@
 import React from 'react';
+import './routeNotFound.scss';
 
 function RouteNotFound() {
   return (
