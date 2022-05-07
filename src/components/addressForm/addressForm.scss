@@ -24,10 +24,13 @@ form {
     input {
       height: 30px;
       padding: 5px;
+      width: 200px;
     }
-    .error {
-      color: red;
-    }
+  }
+  .error {
+    color: red;
+    text-align: center;
+    width: 200px;
   }
   button {
     width: 200px;
