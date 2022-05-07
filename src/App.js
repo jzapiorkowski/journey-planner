@@ -1,10 +1,10 @@
 import { Route, Routes, Link } from 'react-router-dom';
 import './app.scss';
-import AddressForm from './components/addressForm/AddressForm';
-import AllRoutesList from './components/allRoutesList/AllRoutesList';
-import RouteSummary from './components/routeSummary/RouteSummary';
-import LinksBanner from './components/linksBanner/LinksBanner';
-import RouteNotFound from './components/routeNotFound/RouteNotFound';
+import AddressForm from './routes/addressForm/AddressForm';
+import AllRoutesList from './routes/allRoutesList/AllRoutesList';
+import RouteSummary from './routes/routeSummary/RouteSummary';
+import LinksBanner from './routes/linksBanner/LinksBanner';
+import RouteNotFound from './routes/routeNotFound/RouteNotFound';
 import AllRoutesContextProvider from './contexts/AllRoutesContext';
 
 function App() {
