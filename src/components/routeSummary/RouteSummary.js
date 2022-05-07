@@ -4,7 +4,7 @@ import AddressNames from '../addressNames/AddressNames';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 import generatePDF from '../../utils/GeneratePDF';
-import './foundRouteSummary.scss';
+import './routeSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
 import { allRoutesGeolocationsContext } from '../../contexts/AllRoutesContext';
 
