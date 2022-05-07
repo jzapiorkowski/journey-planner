@@ -19,6 +19,12 @@ function AllRoutesList() {
   return (
     <div className='all-routes-list'>
       <h3>My Trips</h3>
+      {!allRoutes.length && (
+        <p className='no-routes-info'>
+          Seems like you haven't searched for routes yet. Try finding some{' '}
+          <Link to='/find-addresses'>here!</Link>
+        </p>
+      )}
       <div className='route-cards'>{routeCards}</div>
     </div>
   );
