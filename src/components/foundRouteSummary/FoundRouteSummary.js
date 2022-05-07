@@ -23,10 +23,14 @@ function FoundRouteSummary() {
 
   useEffect(() => {
     if (originGeolocation && destinationGeolocation) {
-      ReverseGeocode(originGeolocation).then((response) => {
-        const tmp = response.split(', ');
-        setOriginPlaceName(tmp);
-      });
+      ReverseGeocode(originGeolocation)
+        .then((response) => {
+          const tmp = response.split(', ');
+          setOriginPlaceName(tmp);
+        })
+        .catch(() => {
+          navigate('/route-not-found');
+        });
 
       ReverseGeocode(destinationGeolocation)
         .then((response) => {
