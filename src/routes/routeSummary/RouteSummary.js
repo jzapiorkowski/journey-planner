@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Map from '../map/Map';
-import AddressNames from '../addressNames/AddressNames';
+import Map from '../../components/map/Map';
+import AddressNames from '../../components/addressNames/AddressNames';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 import generatePDF from '../../utils/GeneratePDF';
