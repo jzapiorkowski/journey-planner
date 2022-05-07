@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import ForwardGeocode from '../../utils/ForwardGeocode';
 import { setCurrentRouteContext } from '../../contexts/CurrentRouteContext';
@@ -10,6 +10,12 @@ import * as Yup from 'yup';
 function AddressForm() {
   const setCurrentRoute = useContext(setCurrentRouteContext);
   const addNewRoute = useContext(addNewRouteContext);
+
+  const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState(false);
+  const [displayWrongOriginAddress, setDisplayWrongOriginAddress] =
+    useState(false);
+  const [displayWrongDestinationAddress, setDisplayWrongDestinationAddress] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -69,18 +75,37 @@ function AddressForm() {
             destinationAddressCoordinates = resolvedAddress;
           }
         );
-        Promise.all([originPromise, destinationPromise]).then(() => {
-          console.log(originAddressCoordinates, destinationAddressCoordinates);
-          setCurrentRoute([
-            originAddressCoordinates,
-            destinationAddressCoordinates,
-          ]);
-          addNewRoute([
-            originAddressCoordinates,
-            destinationAddressCoordinates,
-          ]);
-          navigate('/my-route');
-        });
+
+        Promise.all([originPromise, destinationPromise])
+          .then(() => {
+            setCurrentRoute([
+              originAddressCoordinates,
+              destinationAddressCoordinates,
+            ]);
+
+            addNewRoute([
+              originAddressCoordinates,
+              destinationAddressCoordinates,
+            ]);
+
+            if (originAddressCoordinates && destinationAddressCoordinates)
+              navigate('/my-route');
+            else {
+              if (!originAddressCoordinates && !destinationAddressCoordinates) {
+                setDisplayWrongOriginAddress(true);
+                setDisplayWrongDestinationAddress(true);
+              } else {
+                if (originAddressCoordinates) {
+                  setDisplayWrongDestinationAddress(true);
+                } else {
+                  setDisplayWrongOriginAddress(true);
+                }
+              }
+            }
+          })
+          .catch(() => {
+            setDisplayGETErrorMessage(true);
+          });
       }}
     >
       <Form>
@@ -106,6 +131,11 @@ function AddressForm() {
             component='p'
             className='error'
           />
+          {displayWrongOriginAddress && (
+            <p className='error'>
+              We can't find the origin address, try changing it
+            </p>
+          )}
         </div>
 
         <div className='address-form' id='destination'>
@@ -142,7 +172,16 @@ function AddressForm() {
             component='p'
             className='error'
           />
+          {displayWrongDestinationAddress && (
+            <p className='error'>
+              We can't find the destination address, try changing it
+            </p>
+          )}
         </div>
+
+        {displayGETErrorMessage && (
+          <p className='error'>Something went wrong, try again later</p>
+        )}
 
         <button type='submit'>Submit</button>
       </Form>
