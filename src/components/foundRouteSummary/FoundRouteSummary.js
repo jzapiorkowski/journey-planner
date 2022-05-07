@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import ReverseGeocode from '../../utils/ReverseGeocode';
 import generatePDF from '../../utils/GeneratePDF';
 import './foundRouteSummary.scss';
+import calculateCost from '../../utils/CalculateCost';
 
 function FoundRouteSummary() {
   const routeCoordinates = useContext(currentRouteContext);
@@ -15,6 +16,8 @@ function FoundRouteSummary() {
 
   const [totalDistance, setTotalDistance] = useState(0);
   const [routeInstructions, setRouteInstructions] = useState([]);
+
+  const [kilomererCost, setKilomererCost] = useState(0);
 
   const location = useLocation();
   const { originGeolocation, destinationGeolocation } = location.state || {};
@@ -44,6 +47,10 @@ function FoundRouteSummary() {
     );
   };
 
+  const handleKilometerCostChange = (event) => {
+    setKilomererCost(event.target.value);
+  };
+
   return (
     <div className='route-summary'>
       <h1>Route Summary</h1>
@@ -52,6 +59,21 @@ function FoundRouteSummary() {
         destinationPlaceName={destinationPlaceName}
       />
       <p className='distance'>Your route is {totalDistance} kilometers long</p>
+      <div className='cost'>
+        <div className='calculate'>
+          <input
+            type='number'
+            onChange={handleKilometerCostChange}
+            value={kilomererCost}
+            min='0'
+          ></input>
+          <label>$ per kilometer</label>
+        </div>
+        <p>
+          This trip will cost you about{' '}
+          {calculateCost(totalDistance, kilomererCost)}$
+        </p>
+      </div>
       <button onClick={getPDF}>GENERATE PDF</button>
       <Map
         originAddressCoordinates={originGeolocation || routeCoordinates[0]}
