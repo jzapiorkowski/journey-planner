@@ -3,7 +3,7 @@ import geolocationClient from '../api/GeolocationClient';
 function ForwardGeocode(address) {
   let coordinates;
 
-  const personalToken = ''; // put your mapbox personal access token here
+  const personalToken = 'pk.eyJ1IjoianphcGlvcmtvd3NraSIsImEiOiJjbDJ3Z2gwc3UwOXBpM2tsb3lsOWxmemFqIn0.kgPVpNPC19xu2imLPWSW3Q'; // put your mapbox personal access token here
 
   const formattedAddress = Object.values(address)
     .filter((notEmpty) => notEmpty)
