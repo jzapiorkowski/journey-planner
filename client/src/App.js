@@ -5,7 +5,6 @@ import AllRoutesList from './routes/allRoutesList/AllRoutesList';
 import RouteSummary from './routes/routeSummary/RouteSummary';
 import LinksBanner from './routes/linksBanner/LinksBanner';
 import RouteNotFound from './routes/routeNotFound/RouteNotFound';
-import AllRoutesContextProvider from './contexts/AllRoutesContext';
 
 function App() {
   return (
@@ -13,29 +12,27 @@ function App() {
       <header>
         <Link to='/'>JOURNEY PLANNER</Link>
       </header>
-      <AllRoutesContextProvider>
-        <Routes>
-          <Route path='/' element={<LinksBanner />} />
-          <Route path='find-addresses' element={<AddressForm />} />
-          <Route path='my-routes' element={<AllRoutesList />} />
-          <Route path='/route/:routeId' element={<RouteSummary />} />
-          <Route path='route-not-found' element={<RouteNotFound />} />
-          <Route
-            path='*'
-            element={
-              <p
-                style={{
-                  textAlign: 'center',
-                  marginTop: '50px',
-                  fontSize: '30px',
-                }}
-              >
-                Sorry, but we couldn't find the thing you were looking for
-              </p>
-            }
-          />
-        </Routes>
-      </AllRoutesContextProvider>
+      <Routes>
+        <Route path='/' element={<LinksBanner />} />
+        <Route path='find-addresses' element={<AddressForm />} />
+        <Route path='my-routes' element={<AllRoutesList />} />
+        <Route path='/route/:routeId' element={<RouteSummary />} />
+        <Route path='route-not-found' element={<RouteNotFound />} />
+        <Route
+          path='*'
+          element={
+            <p
+              style={{
+                textAlign: 'center',
+                marginTop: '50px',
+                fontSize: '30px',
+              }}
+            >
+              Sorry, but we couldn't find the thing you were looking for
+            </p>
+          }
+        />
+      </Routes>
     </div>
   );
 }

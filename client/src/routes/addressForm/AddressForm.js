@@ -1,18 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import './addressForm.scss';
-import {
-  allRoutesGeolocationsContext,
-  addNewRouteContext,
-} from '../../contexts/AllRoutesContext';
 import axios from 'axios';
 import { validationSchema } from './validationSchema';
 
 function AddressForm() {
-  const allRoutes = useContext(allRoutesGeolocationsContext);
-  const addNewRoute = useContext(addNewRouteContext);
-
   const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState('');
 
   const navigate = useNavigate();
@@ -43,15 +36,9 @@ function AddressForm() {
             destinationAddress: destination,
           });
 
-          const { origin: originData, destination: destinationData } =
-            response.data;
+          const { id } = response.data;
 
-          console.log(originData);
-          console.log('====================');
-          console.log(destinationData);
-
-          addNewRoute({ origin: originData, destination: destinationData });
-          navigate(`/route/${allRoutes.length}`);
+          navigate(`/route/${id}`);
         } catch (error) {
           console.log(error);
           setDisplayGETErrorMessage(

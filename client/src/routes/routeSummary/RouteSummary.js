@@ -1,22 +1,36 @@
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Map from '../../components/map/Map';
 import AddressNames from '../../components/addressNames/AddressNames';
 import { useParams } from 'react-router-dom';
 import generatePDF from '../../utils/GeneratePDF';
 import './routeSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
-import { allRoutesGeolocationsContext } from '../../contexts/AllRoutesContext';
+import axios from 'axios';
 
 function RouteSummary() {
-  const allRoutes = useContext(allRoutesGeolocationsContext);
   const params = useParams();
   const id = params.routeId;
+  const [journeyData, setJourneyData] = useState({});
+  const [fetchError, setFetchError] = useState(null);
 
-  const originPlaceName = allRoutes[id].origin.address;
-  const destinationPlaceName = allRoutes[id].destination.address;
+  useEffect(() => {
+    const getJourney = async () => {
+      try {
+        const { data } = await axios.get(`http://localhost:3001/journey/${id}`);
+        setJourneyData(data);
+      } catch (error) {
+        setFetchError(error.response.data || 'something went wrong');
+      }
+    };
 
-  const originGeolocation = allRoutes[id].origin.coordinates;
-  const destinationGeolocation = allRoutes[id].destination.coordinates;
+    getJourney();
+  }, [id]);
+
+  const originPlaceName = journeyData?.origin?.address || '';
+  const destinationPlaceName = journeyData?.destination?.address || '';
+
+  const originGeolocation = journeyData?.origin?.coordinates || [];
+  const destinationGeolocation = journeyData?.destination?.coordinates || [];
 
   const [totalDistance, setTotalDistance] = useState(0);
   const [routeInstructions, setRouteInstructions] = useState([]);
@@ -41,6 +55,22 @@ function RouteSummary() {
   const handleKilometerCostChange = useCallback((event) => {
     setKilomererCost(event.target.value);
   }, []);
+
+  if (fetchError) {
+    return (
+      <div className='route-summary'>
+        <h1>{fetchError}</h1>
+      </div>
+    );
+  }
+
+  if (Object.keys(journeyData).length === 0) {
+    return (
+      <div className='route-summary'>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className='route-summary'>
