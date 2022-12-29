@@ -80,10 +80,26 @@ export const postJourney: RequestHandler = async (
   res.status(201).send(JSON.stringify(journeys[journeys.length - 1]));
 };
 
-export const getJourneys: RequestHandler = async (
+export const getJourneys: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   res.send({ journeys });
+};
+
+export const getSpecificJourney: RequestHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const journey = journeys.find(
+    (journey) => journey.id === req.params.journeyId
+  );
+
+  if (journey === undefined) {
+    res.status(404).send('could not find queried journey');
+  }
+
+  res.send(journey);
 };
