@@ -7,10 +7,12 @@ import axios from 'axios';
 function AllRoutesList() {
   const [allJourneysIDs, setAllJourneysIDs] = useState([]);
   const [fetchError, setFetchError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchJourneys = async () => {
       try {
+        setIsLoading(true);
         const {
           data: { journeys },
         } = await axios.get('http://localhost:3001/journeys');
@@ -18,6 +20,7 @@ function AllRoutesList() {
         const IDs = journeys.map((journey) => journey.id);
 
         setAllJourneysIDs(IDs);
+        setIsLoading(false);
       } catch (error) {
         setFetchError(error.response.data || 'something went wrong');
       }
@@ -51,16 +54,25 @@ function AllRoutesList() {
     );
   }
 
+  if (isLoading) {
+    return (
+      <div className='route-summary'>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
+
   return (
     <div className='all-routes-list'>
       <h3>My Trips</h3>
-      {!allJourneysIDs.length && (
+      {!allJourneysIDs.length ? (
         <p className='no-routes-info'>
           Seems like journeys haven't been searched yet. Try finding some!
           <Link to='/find-addresses'>here!</Link>
         </p>
+      ) : (
+        <div className='route-cards'>{routeCards}</div>
       )}
-      <div className='route-cards'>{routeCards}</div>
     </div>
   );
 }
