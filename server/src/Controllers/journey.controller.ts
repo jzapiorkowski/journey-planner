@@ -28,6 +28,7 @@ export const postJourney: RequestHandler = async (
     id: journeyUuid,
     origin: {
       address: originAddress,
+      place_name: (originCoords as Coordinates).place_name,
       coordinates: {
         longtitude: (originCoords as Coordinates).longtitude,
         latitude: (originCoords as Coordinates).latitude,
@@ -35,6 +36,7 @@ export const postJourney: RequestHandler = async (
     },
     destination: {
       address: destinationAddress,
+      place_name: (destinationCoords as Coordinates).place_name,
       coordinates: {
         longtitude: (destinationCoords as Coordinates).longtitude,
         latitude: (destinationCoords as Coordinates).latitude,

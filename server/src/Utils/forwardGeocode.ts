@@ -4,6 +4,7 @@ import axios from 'axios';
 export interface Coordinates {
   longtitude: number;
   latitude: number;
+  place_name: string;
 }
 
 export interface ErrorType {
@@ -26,10 +27,16 @@ async function ForwardGeocode(
     if (coordinates.data.features.length === 0) {
       return { message: 'could not find', status: 404 };
     }
-    const [longtitude, latitude] =
-      coordinates.data.features[0]?.geometry?.coordinates.reverse() as number[];
 
-    return { longtitude, latitude };
+    const responseData = {
+      longtitude: coordinates.data.features[0]?.geometry
+        ?.coordinates[1] as number,
+      latitude: coordinates.data.features[0]?.geometry
+        ?.coordinates[0] as number,
+      place_name: coordinates.data.features[0]?.place_name as string,
+    };
+
+    return responseData;
   } catch (error: any) {
     return {
       message: error.message as string,

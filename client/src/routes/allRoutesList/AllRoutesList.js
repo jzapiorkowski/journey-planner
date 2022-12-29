@@ -5,7 +5,7 @@ import routeCard from '../../assets/images/route-card.jpg';
 import axios from 'axios';
 
 function AllRoutesList() {
-  const [allJourneysIDs, setAllJourneysIDs] = useState([]);
+  const [allJourneys, setAllJourneys] = useState([]);
   const [fetchError, setFetchError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,12 +17,19 @@ function AllRoutesList() {
           data: { journeys },
         } = await axios.get('http://localhost:3001/journeys');
 
-        const IDs = journeys.map((journey) => journey.id);
+        const places = journeys.map((journey) => ({
+          id: journey.id,
+          origin_place_name: `${journey.origin.place_name.substring(0, 30)}...`,
+          destination_place_name: `${journey.destination.place_name.substring(
+            0,
+            30
+          )}...`,
+        }));
 
-        setAllJourneysIDs(IDs);
+        setAllJourneys(places);
         setIsLoading(false);
       } catch (error) {
-        setFetchError(error.response.data || 'something went wrong');
+        setFetchError(error?.response?.data || 'something went wrong');
       }
     };
 
@@ -31,19 +38,17 @@ function AllRoutesList() {
 
   const routeCards = useMemo(
     () =>
-      allJourneysIDs.map((journeyID, index) => {
+      allJourneys.map(({ id, origin_place_name, destination_place_name }) => {
         return (
-          <Link
-            to={`/route/${journeyID}`}
-            key={journeyID}
-            className='route-card'
-          >
+          <Link to={`/route/${id}`} key={id} className='route-card'>
             <img src={routeCard} alt=''></img>
-            <h4>Trip {index + 1}</h4>
+            <h4>
+              {origin_place_name} {'->'} {destination_place_name}
+            </h4>
           </Link>
         );
       }),
-    [allJourneysIDs]
+    [allJourneys]
   );
 
   if (fetchError) {
@@ -65,7 +70,7 @@ function AllRoutesList() {
   return (
     <div className='all-routes-list'>
       <h3>My Trips</h3>
-      {!allJourneysIDs.length ? (
+      {!allJourneys.length ? (
         <p className='no-routes-info'>
           Seems like journeys haven't been searched yet. Try finding some!
           <Link to='/find-addresses'>here!</Link>

@@ -6,6 +6,7 @@ export interface Address {
 }
 
 interface Place {
+  place_name: string;
   address: Address;
   coordinates: {
     longtitude: number;

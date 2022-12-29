@@ -9,6 +9,7 @@ const JourneySchema = new mongoose.Schema<Journey>({
     dropDups: true,
   },
   origin: {
+    place_name: { type: String, required: true },
     address: {
       country: { type: String, required: true },
       city: { type: String, required: true },
@@ -21,6 +22,7 @@ const JourneySchema = new mongoose.Schema<Journey>({
     },
   },
   destination: {
+    place_name: { type: String, required: true },
     address: {
       country: { type: String, required: true },
       city: { type: String, required: true },
