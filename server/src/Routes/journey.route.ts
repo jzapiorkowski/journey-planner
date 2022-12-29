@@ -1,3 +1,4 @@
+import { verifyUser } from '../Middlewares/authenticate.middleware';
 import {
   getJourneys,
   getSpecificJourney,
@@ -9,10 +10,10 @@ import express from 'express';
 
 const journeyRouter = express.Router();
 
-journeyRouter.post('/journey', postJourney);
-journeyRouter.get('/journeys', getJourneys);
-journeyRouter.get('/journey/:journeyId', getSpecificJourney);
-journeyRouter.put('/journey/:journeyId', updateJourney);
-journeyRouter.delete('/journey/:journeyId', deleteJourney);
+journeyRouter.post('/journey', verifyUser, postJourney);
+journeyRouter.get('/journeys', verifyUser, getJourneys);
+journeyRouter.get('/journey/:journeyId', verifyUser, getSpecificJourney);
+journeyRouter.put('/journey/:journeyId', verifyUser, updateJourney);
+journeyRouter.delete('/journey/:journeyId', verifyUser, deleteJourney);
 
 export default journeyRouter;

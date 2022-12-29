@@ -20,7 +20,12 @@ function AddressForm() {
         setIsLoading(true);
         try {
           const { data } = await axios.get(
-            `http://localhost:3001/journey/${id}`
+            `http://localhost:3001/journey/${id}`,
+            {
+              headers: {
+                'auth-token': sessionStorage.getItem('auth-token'),
+              },
+            }
           );
 
           setJourneyData({

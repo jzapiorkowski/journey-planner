@@ -18,7 +18,14 @@ function RouteSummary() {
   useEffect(() => {
     const getJourney = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:3001/journey/${id}`);
+        const { data } = await axios.get(
+          `http://localhost:3001/journey/${id}`,
+          {
+            headers: {
+              'auth-token': sessionStorage.getItem('auth-token'),
+            },
+          }
+        );
         setJourneyData(data);
       } catch (error) {
         setFetchError(error.response.data || 'something went wrong');
