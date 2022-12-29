@@ -1,0 +1,39 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  button {
+    width: 200px;
+    height: 40px;
+    grid-row: 2;
+    margin: auto;
+  }
+  .register-area {
+    margin-top: 40px;
+  }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    label {
+      font-size: 20px;
+    }
+    input {
+      height: 30px;
+      padding: 5px;
+      width: 200px;
+    }
+    .error {
+      color: red;
+    }
+    button {
+      width: 200px;
+      height: 40px;
+      grid-row: 2;
+      margin: auto;
+    }
+    .register-area {
+      margin-top: 40px;
+    }
+  }
+}
