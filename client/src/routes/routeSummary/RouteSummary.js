@@ -61,7 +61,11 @@ function RouteSummary() {
   const onDeleteJourney = useCallback(async () => {
     try {
       setIsSubmitting(true);
-      await axios.delete(`http://localhost:3001/journey/${id}`);
+      await axios.delete(`http://localhost:3001/journey/${id}`, {
+        headers: {
+          'auth-token': sessionStorage.getItem('auth-token'),
+        },
+      });
       setIsSubmitting(false);
 
       navigate('/');
