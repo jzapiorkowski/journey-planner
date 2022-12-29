@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import journeyRouter from './Routes/journey.route';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import userRouter from './Routes/user.route';
 
 mongoose.set('strictQuery', false);
 mongoose
@@ -22,3 +23,4 @@ app.listen(port, () => {
 });
 
 app.use(journeyRouter);
+app.use(userRouter);
