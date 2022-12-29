@@ -15,6 +15,8 @@ export default function LoginForm() {
     navigate('/register');
   }, [navigate]);
 
+  sessionStorage.getItem('auth-token');
+
   return (
     <div className='login-page'>
       <Formik
@@ -28,20 +30,27 @@ export default function LoginForm() {
         })}
         onSubmit={async ({ login, password }) => {
           try {
-            if (location.pathname === '/login')
-              await axios.post(`http://localhost:3001/login`, {
-                params: {
-                  login,
-                  password,
-                },
+            if (location.pathname === '/login') {
+              const {
+                data: { token },
+              } = await axios.post(`http://localhost:3001/login`, {
+                login,
+                password,
               });
-            else
-              await axios.post(`http://localhost:3001/register`, {
-                params: {
-                  login,
-                  password,
-                },
+
+              sessionStorage.setItem('auth-token', token);
+              navigate('/user');
+            } else {
+              const {
+                data: { token },
+              } = await axios.post(`http://localhost:3001/register`, {
+                login,
+                password,
               });
+
+              sessionStorage.setItem('auth-token', token);
+              navigate('/user');
+            }
           } catch (error) {
             console.log(error);
             setloginError(error.response.data || 'something went wrong');

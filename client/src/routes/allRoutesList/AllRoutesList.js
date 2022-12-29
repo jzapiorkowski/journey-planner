@@ -16,6 +16,9 @@ function AllRoutesList() {
       const {
         data: { journeys },
       } = await axios.get('http://localhost:3001/journeys', {
+        headers: {
+          'auth-token': sessionStorage.getItem('auth-token'),
+        },
         params: { name },
       });
 
