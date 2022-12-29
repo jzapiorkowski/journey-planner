@@ -1,23 +1,19 @@
 import React, { useContext, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import ForwardGeocode from '../../utils/ForwardGeocode';
 import { useNavigate } from 'react-router-dom';
 import './addressForm.scss';
-import * as Yup from 'yup';
 import {
   allRoutesGeolocationsContext,
   addNewRouteContext,
 } from '../../contexts/AllRoutesContext';
+import axios from 'axios';
+import { validationSchema } from './validationSchema';
 
 function AddressForm() {
   const allRoutes = useContext(allRoutesGeolocationsContext);
   const addNewRoute = useContext(addNewRouteContext);
 
-  const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState(false);
-  const [displayWrongOriginAddress, setDisplayWrongOriginAddress] =
-    useState(false);
-  const [displayWrongDestinationAddress, setDisplayWrongDestinationAddress] =
-    useState(false);
+  const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -37,72 +33,31 @@ function AddressForm() {
           streetNumber: '',
         },
       }}
-      validationSchema={Yup.object().shape({
-        origin: Yup.object({
-          country: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          city: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          street: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          streetNumber: Yup.number().typeError('Must be a number'),
-        }),
-        destination: Yup.object({
-          country: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          city: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          street: Yup.string()
-            .required('Required')
-            .max(30, 'Must be 30 characters or less'),
-          streetNumber: Yup.number().typeError('Must be a number'),
-        }),
-      })}
-      onSubmit={(values) => {
-        let originAddressCoordinates;
-        let destinationAddressCoordinates;
+      validationSchema={validationSchema}
+      onSubmit={async (values) => {
+        const { origin, destination } = values;
 
-        const originPromise = ForwardGeocode(values.origin).then(
-          (resolvedAddress) => {
-            originAddressCoordinates = resolvedAddress;
-          }
-        );
-        const destinationPromise = ForwardGeocode(values.destination).then(
-          (resolvedAddress) => {
-            destinationAddressCoordinates = resolvedAddress;
-          }
-        );
-
-        Promise.all([originPromise, destinationPromise])
-          .then(() => {
-            if (originAddressCoordinates && destinationAddressCoordinates) {
-              addNewRoute([
-                originAddressCoordinates,
-                destinationAddressCoordinates,
-              ]);
-
-              navigate(`/route/${allRoutes.length}`);
-            } else {
-              if (!originAddressCoordinates && !destinationAddressCoordinates) {
-                setDisplayWrongOriginAddress(true);
-                setDisplayWrongDestinationAddress(true);
-              } else {
-                if (originAddressCoordinates) {
-                  setDisplayWrongDestinationAddress(true);
-                } else {
-                  setDisplayWrongOriginAddress(true);
-                }
-              }
-            }
-          })
-          .catch(() => {
-            setDisplayGETErrorMessage(true);
+        try {
+          const response = await axios.post('http://localhost:3001/journey', {
+            originAddress: origin,
+            destinationAddress: destination,
           });
+
+          const { origin: originData, destination: destinationData } =
+            response.data;
+
+          console.log(originData);
+          console.log('====================');
+          console.log(destinationData);
+
+          addNewRoute({ origin: originData, destination: destinationData });
+          navigate(`/route/${allRoutes.length}`);
+        } catch (error) {
+          console.log(error);
+          setDisplayGETErrorMessage(
+            error.response.data || 'something went wrong'
+          );
+        }
       }}
     >
       <Form>
@@ -128,11 +83,6 @@ function AddressForm() {
             component='p'
             className='error'
           />
-          {displayWrongOriginAddress && (
-            <p className='error'>
-              We can't find the origin address, try changing it
-            </p>
-          )}
         </div>
 
         <div className='address-form' id='destination'>
@@ -169,15 +119,10 @@ function AddressForm() {
             component='p'
             className='error'
           />
-          {displayWrongDestinationAddress && (
-            <p className='error'>
-              We can't find the destination address, try changing it
-            </p>
-          )}
         </div>
 
         {displayGETErrorMessage && (
-          <p className='error'>Something went wrong, try again later</p>
+          <p className='error'>{displayGETErrorMessage}</p>
         )}
 
         <button type='submit'>Submit</button>

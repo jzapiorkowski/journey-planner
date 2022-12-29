@@ -1,57 +1,28 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import Map from '../../components/map/Map';
 import AddressNames from '../../components/addressNames/AddressNames';
-import { useNavigate, useParams } from 'react-router-dom';
-import ReverseGeocode from '../../utils/ReverseGeocode';
+import { useParams } from 'react-router-dom';
 import generatePDF from '../../utils/GeneratePDF';
 import './routeSummary.scss';
 import calculateCost from '../../utils/CalculateCost';
 import { allRoutesGeolocationsContext } from '../../contexts/AllRoutesContext';
 
 function RouteSummary() {
-  const [originPlaceName, setOriginPlaceName] = useState([]);
-  const [destinationPlaceName, setDestinationPlaceName] = useState([]);
+  const allRoutes = useContext(allRoutesGeolocationsContext);
+  const params = useParams();
+  const id = params.routeId;
+
+  const originPlaceName = allRoutes[id].origin.address;
+  const destinationPlaceName = allRoutes[id].destination.address;
+
+  const originGeolocation = allRoutes[id].origin.coordinates;
+  const destinationGeolocation = allRoutes[id].destination.coordinates;
 
   const [totalDistance, setTotalDistance] = useState(0);
   const [routeInstructions, setRouteInstructions] = useState([]);
-
   const [kilomererCost, setKilomererCost] = useState(0);
 
-  const allRoutes = useContext(allRoutesGeolocationsContext);
-
-  let params = useParams();
-  const id = params.routeId;
-
-  const navigate = useNavigate();
-
-  const originGeolocation = allRoutes[id]?.[0];
-  const destinationGeolocation = allRoutes[id]?.[1];
-
-  useEffect(() => {
-    if (allRoutes[id]) {
-      ReverseGeocode(originGeolocation)
-        .then((response) => {
-          const tmp = response.split(', ');
-          setOriginPlaceName(tmp);
-        })
-        .catch(() => {
-          navigate('/route-not-found');
-        });
-
-      ReverseGeocode(destinationGeolocation)
-        .then((response) => {
-          const tmp = response.split(', ');
-          setDestinationPlaceName(tmp);
-        })
-        .catch(() => {
-          navigate('/route-not-found');
-        });
-    } else {
-      navigate('/route-not-found');
-    }
-  }, []);
-
-  const getPDF = () => {
+  const getPDF = useCallback(() => {
     generatePDF(
       originPlaceName,
       destinationPlaceName,
@@ -59,11 +30,17 @@ function RouteSummary() {
       routeInstructions,
       calculateCost(totalDistance, kilomererCost)
     );
-  };
+  }, [
+    destinationPlaceName,
+    kilomererCost,
+    originPlaceName,
+    routeInstructions,
+    totalDistance,
+  ]);
 
-  const handleKilometerCostChange = (event) => {
+  const handleKilometerCostChange = useCallback((event) => {
     setKilomererCost(event.target.value);
-  };
+  }, []);
 
   return (
     <div className='route-summary'>
@@ -90,8 +67,14 @@ function RouteSummary() {
       </div>
       <button onClick={getPDF}>GENERATE PDF</button>
       <Map
-        originAddressCoordinates={originGeolocation}
-        destinationAddressCoordinates={destinationGeolocation}
+        originAddressCoordinates={[
+          originGeolocation.longtitude,
+          originGeolocation.latitude,
+        ]}
+        destinationAddressCoordinates={[
+          destinationGeolocation.longtitude,
+          destinationGeolocation.latitude,
+        ]}
         setTotalDistance={setTotalDistance}
         setRouteInstructions={setRouteInstructions}
       />

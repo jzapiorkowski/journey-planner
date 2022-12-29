@@ -6,15 +6,17 @@ function AddressNames({ originPlaceName, destinationPlaceName }) {
     <div className='addresses'>
       <div className='address' id='origin-address'>
         <h2>Origin Address</h2>
-        {originPlaceName.map((element, index) => {
-          return <p key={index}>{element}</p>;
-        })}
+        <p>{originPlaceName.country}</p>
+        <p>{originPlaceName.city}</p>
+        <p>{originPlaceName.street}</p>
+        <p>{originPlaceName.streetNumber}</p>
       </div>
       <div className='address' id='destination-address'>
         <h2>Destination Address</h2>
-        {destinationPlaceName.map((element, index) => {
-          return <p key={index}>{element}</p>;
-        })}
+        <p>{destinationPlaceName.country}</p>
+        <p>{destinationPlaceName.city}</p>
+        <p>{destinationPlaceName.street}</p>
+        <p>{destinationPlaceName.streetNumber}</p>
       </div>
     </div>
   );
