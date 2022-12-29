@@ -125,5 +125,5 @@ export const deleteJourney: RequestHandler = async (
     return;
   }
 
-  res.status(200);
+  res.sendStatus(200);
 };
