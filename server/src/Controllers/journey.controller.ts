@@ -10,12 +10,22 @@ export const postJourney: RequestHandler = async (
   req: Request<
     any,
     any,
-    { originAddress: Address; destinationAddress: Address }
+    {
+      originAddress: Address;
+      destinationAddress: Address;
+      user: { login: string };
+    }
   >,
   res: Response,
   next: NextFunction
 ) => {
-  const { originAddress, destinationAddress } = req.body;
+  const {
+    originAddress,
+    destinationAddress,
+    user: { login },
+  } = req.body;
+
+  console.log(originAddress);
 
   const originCoords = await ForwardGeocode(originAddress);
   const destinationCoords = await ForwardGeocode(destinationAddress);
@@ -25,6 +35,7 @@ export const postJourney: RequestHandler = async (
   const journeyUuid = UUID();
 
   await JourneyModel.create({
+    userLogin: login,
     id: journeyUuid,
     origin: {
       address: originAddress,
@@ -53,8 +64,10 @@ export const getJourneys: RequestHandler = async (
   next: NextFunction
 ) => {
   const { name = '' } = req.query;
+  const { login } = req.body.user;
 
   const journeys = await JourneyModel.find({
+    userLogin: login,
     $or: [
       {
         'origin.place_name': { $regex: name as string },
@@ -73,7 +86,11 @@ export const getSpecificJourney: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const journey = await JourneyModel.findOne({ id: req.params.journeyId });
+  const { login } = req.body.user;
+  const journey = await JourneyModel.findOne({
+    userLogin: login,
+    id: req.params.journeyId,
+  });
 
   if (journey === null) {
     res.status(404).send('could not find queried journey');
@@ -88,7 +105,12 @@ export const updateJourney: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const journey = await JourneyModel.findOne({ id: req.params.journeyId });
+  const { login } = req.body.user;
+
+  const journey = await JourneyModel.findOne({
+    userLogin: login,
+    id: req.params.journeyId,
+  });
 
   if (!journey) {
     return res.status(400).send('could not find queried journey');
@@ -131,7 +153,12 @@ export const deleteJourney: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const journey = await JourneyModel.deleteOne({ id: req.params.journeyId });
+  const { login } = req.body.user;
+
+  const journey = await JourneyModel.deleteOne({
+    userLogin: login,
+    id: req.params.journeyId,
+  });
 
   if (!journey.deletedCount) {
     res.status(400).send('could not find queried journey');

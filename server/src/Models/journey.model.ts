@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import { Journey } from '../Types/journey.type';
 
 const JourneySchema = new mongoose.Schema<Journey>({
+  userLogin: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   id: {
     type: String,
     required: true,

@@ -15,6 +15,7 @@ interface Place {
 }
 
 export interface Journey {
+  userLogin: string;
   id: string;
   origin: Place;
   destination: Place;
