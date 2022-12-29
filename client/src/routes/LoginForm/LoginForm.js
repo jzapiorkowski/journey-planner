@@ -49,7 +49,7 @@ export default function LoginForm() {
         }}
       >
         <Form className='login-form'>
-          <label>E-mail</label>
+          <label>Login</label>
           <Field name='login' />
           <ErrorMessage name='login' component='p' className='error' />
           <label>Password</label>
