@@ -52,7 +52,18 @@ export const getJourneys: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const journeys = await JourneyModel.find();
+  const { name = '' } = req.query;
+
+  const journeys = await JourneyModel.find({
+    $or: [
+      {
+        'origin.place_name': { $regex: name as string },
+      },
+      {
+        'destination.place_name': { $regex: name as string },
+      },
+    ],
+  });
 
   res.send({ journeys });
 };
