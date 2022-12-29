@@ -112,3 +112,18 @@ export const updateJourney: RequestHandler = async (
 
   res.status(200).send({ id: journey.id });
 };
+
+export const deleteJourney: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const journey = await JourneyModel.deleteOne({ id: req.params.journeyId });
+
+  if (!journey.deletedCount) {
+    res.status(400).send('could not find queried journey');
+    return;
+  }
+
+  res.status(200);
+};

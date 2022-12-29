@@ -3,6 +3,7 @@ import {
   getSpecificJourney,
   postJourney,
   updateJourney,
+  deleteJourney,
 } from './../Controllers/journey.controller';
 import express from 'express';
 
@@ -12,5 +13,6 @@ journeyRouter.post('/journey', postJourney);
 journeyRouter.get('/journeys', getJourneys);
 journeyRouter.get('/journey/:journeyId', getSpecificJourney);
 journeyRouter.put('/journey/:journeyId', updateJourney);
+journeyRouter.delete('/journey/:journeyId', deleteJourney);
 
 export default journeyRouter;
