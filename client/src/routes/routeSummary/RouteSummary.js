@@ -4,7 +4,6 @@ import AddressNames from '../../components/addressNames/AddressNames';
 import { useParams } from 'react-router-dom';
 import generatePDF from '../../utils/GeneratePDF';
 import './routeSummary.scss';
-import calculateCost from '../../utils/CalculateCost';
 import axios from 'axios';
 
 function RouteSummary() {
@@ -34,27 +33,15 @@ function RouteSummary() {
 
   const [totalDistance, setTotalDistance] = useState(0);
   const [routeInstructions, setRouteInstructions] = useState([]);
-  const [kilomererCost, setKilomererCost] = useState(0);
 
   const getPDF = useCallback(() => {
     generatePDF(
       originPlaceName,
       destinationPlaceName,
       totalDistance,
-      routeInstructions,
-      calculateCost(totalDistance, kilomererCost)
+      routeInstructions
     );
-  }, [
-    destinationPlaceName,
-    kilomererCost,
-    originPlaceName,
-    routeInstructions,
-    totalDistance,
-  ]);
-
-  const handleKilometerCostChange = useCallback((event) => {
-    setKilomererCost(event.target.value);
-  }, []);
+  }, [destinationPlaceName, originPlaceName, routeInstructions, totalDistance]);
 
   if (fetchError) {
     return (
@@ -80,21 +67,7 @@ function RouteSummary() {
         destinationPlaceName={destinationPlaceName}
       />
       <p className='distance'>Your route is {totalDistance} kilometers long</p>
-      <div className='cost'>
-        <div className='calculate'>
-          <input
-            type='number'
-            onChange={handleKilometerCostChange}
-            value={kilomererCost}
-            min='0'
-          ></input>
-          <label>$ per kilometer</label>
-        </div>
-        <p>
-          This trip will cost you about{' '}
-          {calculateCost(totalDistance, kilomererCost)}$
-        </p>
-      </div>
+
       <button onClick={getPDF}>GENERATE PDF</button>
       <Map
         originAddressCoordinates={[
