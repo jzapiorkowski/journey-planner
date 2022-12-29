@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './allRoutesList.scss';
 import routeCard from '../../assets/images/route-card.jpg';
@@ -8,33 +8,36 @@ function AllRoutesList() {
   const [allJourneys, setAllJourneys] = useState([]);
   const [fetchError, setFetchError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState('');
+
+  const getJourneys = useCallback(async (name) => {
+    try {
+      setIsLoading(true);
+      const {
+        data: { journeys },
+      } = await axios.get('http://localhost:3001/journeys', {
+        params: { name },
+      });
+
+      const places = journeys.map((journey) => ({
+        id: journey.id,
+        origin_place_name: `${journey.origin.place_name.substring(0, 30)}...`,
+        destination_place_name: `${journey.destination.place_name.substring(
+          0,
+          30
+        )}...`,
+      }));
+
+      setAllJourneys(places);
+      setIsLoading(false);
+    } catch (error) {
+      setFetchError(error?.response?.data || 'something went wrong');
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchJourneys = async () => {
-      try {
-        setIsLoading(true);
-        const {
-          data: { journeys },
-        } = await axios.get('http://localhost:3001/journeys');
-
-        const places = journeys.map((journey) => ({
-          id: journey.id,
-          origin_place_name: `${journey.origin.place_name.substring(0, 30)}...`,
-          destination_place_name: `${journey.destination.place_name.substring(
-            0,
-            30
-          )}...`,
-        }));
-
-        setAllJourneys(places);
-        setIsLoading(false);
-      } catch (error) {
-        setFetchError(error?.response?.data || 'something went wrong');
-      }
-    };
-
-    fetchJourneys();
-  }, []);
+    getJourneys();
+  }, [getJourneys]);
 
   const routeCards = useMemo(
     () =>
@@ -50,6 +53,14 @@ function AllRoutesList() {
       }),
     [allJourneys]
   );
+
+  const handleQueryChange = useCallback((event) => {
+    setQuery(event.target.value);
+  }, []);
+
+  const handleFindJourneys = useCallback(() => {
+    getJourneys(query);
+  }, [getJourneys, query]);
 
   if (fetchError) {
     return (
@@ -70,9 +81,15 @@ function AllRoutesList() {
   return (
     <div className='all-routes-list'>
       <h3>My Trips</h3>
+      <input
+        placeholder='find your journey here...'
+        value={query}
+        onChange={handleQueryChange}
+      />
+      <button onClick={handleFindJourneys}>Submit</button>
       {!allJourneys.length ? (
         <p className='no-routes-info'>
-          Seems like journeys haven't been searched yet. Try finding some!
+          Seems like journeys haven't been searched yet. Try finding some{' '}
           <Link to='/find-addresses'>here!</Link>
         </p>
       ) : (
