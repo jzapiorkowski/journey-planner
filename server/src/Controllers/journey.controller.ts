@@ -68,3 +68,47 @@ export const getSpecificJourney: RequestHandler = async (
 
   res.send(journey);
 };
+
+export const updateJourney: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const journey = await JourneyModel.findOne({ id: req.params.journeyId });
+
+  if (!journey) {
+    res.status(400).send('could not find queried journey');
+    return;
+  }
+
+  if (req.body.originAddress) {
+    Object.keys(req.body.originAddress.address).forEach((key) => {
+      journey.origin.address[key as keyof Address] =
+        req.body.originAddress.address[key as keyof Address];
+    });
+  }
+
+  if (req.body.destinationAddress) {
+    Object.keys(req.body.destinationAddress.address).forEach((key) => {
+      journey.destination.address[key as keyof Address] =
+        req.body.destinationAddress.address[key as keyof Address];
+    });
+  }
+
+  const originCoords = await ForwardGeocode(journey.origin.address);
+  const destinationCoords = await ForwardGeocode(journey.destination.address);
+
+  checkCoordinates(originCoords, destinationCoords, res);
+
+  journey.origin.coordinates = originCoords as Coordinates;
+  journey.destination.coordinates = destinationCoords as Coordinates;
+
+  await JourneyModel.updateOne(
+    { id: req.params.journeyId },
+    {
+      $set: journey,
+    }
+  );
+
+  res.status(200).send(journey.id);
+};
