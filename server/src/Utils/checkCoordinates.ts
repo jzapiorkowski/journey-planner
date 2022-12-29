@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Response } from 'express';
 import { Coordinates, ErrorType } from './forwardGeocode';
 
 export const checkCoordinates = async (

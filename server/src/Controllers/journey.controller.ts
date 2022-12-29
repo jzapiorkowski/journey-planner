@@ -64,6 +64,7 @@ export const getSpecificJourney: RequestHandler = async (
 
   if (journey === null) {
     res.status(404).send('could not find queried journey');
+    return;
   }
 
   res.send(journey);
@@ -77,21 +78,20 @@ export const updateJourney: RequestHandler = async (
   const journey = await JourneyModel.findOne({ id: req.params.journeyId });
 
   if (!journey) {
-    res.status(400).send('could not find queried journey');
-    return;
+    return res.status(400).send('could not find queried journey');
   }
 
   if (req.body.originAddress) {
-    Object.keys(req.body.originAddress.address).forEach((key) => {
+    Object.keys(req.body.originAddress).forEach((key) => {
       journey.origin.address[key as keyof Address] =
-        req.body.originAddress.address[key as keyof Address];
+        req.body.originAddress[key as keyof Address];
     });
   }
 
   if (req.body.destinationAddress) {
-    Object.keys(req.body.destinationAddress.address).forEach((key) => {
+    Object.keys(req.body.destinationAddress).forEach((key) => {
       journey.destination.address[key as keyof Address] =
-        req.body.destinationAddress.address[key as keyof Address];
+        req.body.destinationAddress[key as keyof Address];
     });
   }
 
@@ -110,5 +110,5 @@ export const updateJourney: RequestHandler = async (
     }
   );
 
-  res.status(200).send(journey.id);
+  res.status(200).send({ id: journey.id });
 };
