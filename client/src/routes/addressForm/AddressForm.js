@@ -79,6 +79,11 @@ function AddressForm() {
               {
                 originAddress: origin,
                 destinationAddress: destination,
+              },
+              {
+                headers: {
+                  'auth-token': sessionStorage.getItem('auth-token'),
+                },
               }
             );
 
@@ -93,10 +98,18 @@ function AddressForm() {
           }
         } else {
           try {
-            const response = await axios.post('http://localhost:3001/journey', {
-              originAddress: origin,
-              destinationAddress: destination,
-            });
+            const response = await axios.post(
+              'http://localhost:3001/journey',
+              {
+                originAddress: origin,
+                destinationAddress: destination,
+              },
+              {
+                headers: {
+                  'auth-token': sessionStorage.getItem('auth-token'),
+                },
+              }
+            );
 
             const { id } = response.data;
 

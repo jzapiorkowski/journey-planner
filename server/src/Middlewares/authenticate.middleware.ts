@@ -15,7 +15,7 @@ export const verifyUser: RequestHandler = async (
     }
 
     // @ts-ignore
-    req.body = { login: user.login };
+    req.body.user = { login: user.login };
 
     next();
   });

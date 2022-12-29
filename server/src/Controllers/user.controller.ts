@@ -67,11 +67,11 @@ export const registerUser: RequestHandler = async (
 };
 
 export const getUserData: RequestHandler = async (
-  req: Request<any, any, User>,
+  req: Request<any, any, { user: Partial<User> }>,
   res: Response,
   next: NextFunction
 ) => {
-  const { login } = req.body;
+  const { login } = req.body.user;
 
   const user = await UserModel.findOne({
     login,
