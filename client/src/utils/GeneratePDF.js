@@ -18,13 +18,18 @@ function generatePDF(
   doc.text('Origin address:', 20, 40);
 
   doc.setFont(undefined, 'normal');
-  doc.text(originAddress, 20, 50);
+
+  const originAddressName = Object.values(originAddress).join('\r\n');
+
+  doc.text(originAddressName, 20, 50);
 
   doc.setFont(undefined, 'bold');
   doc.text('Destination address:', 20, 80);
 
+  const destinationAddressName = Object.values(destinationAddress).join('\r\n');
+
   doc.setFont(undefined, 'normal');
-  doc.text(destinationAddress, 20, 90);
+  doc.text(destinationAddressName, 20, 90);
 
   doc.setFont(undefined, 'bold');
   doc.text('Distance:', 20, 120);
