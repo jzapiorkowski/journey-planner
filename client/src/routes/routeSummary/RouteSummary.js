@@ -13,6 +13,7 @@ function RouteSummary() {
   const [journeyData, setJourneyData] = useState({});
   const [fetchError, setFetchError] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const getJourney = async () => {
@@ -37,6 +38,7 @@ function RouteSummary() {
   const [routeInstructions, setRouteInstructions] = useState([]);
 
   const getPDF = useCallback(() => {
+    setIsSubmitting();
     generatePDF(
       originPlaceName,
       destinationPlaceName,
@@ -51,7 +53,9 @@ function RouteSummary() {
 
   const onDeleteJourney = useCallback(async () => {
     try {
+      setIsSubmitting(true);
       await axios.delete(`http://localhost:3001/journey/${id}`);
+      setIsSubmitting(false);
 
       navigate('/');
     } catch (error) {
@@ -86,7 +90,7 @@ function RouteSummary() {
 
       <button onClick={getPDF}>GENERATE PDF</button>
       <button onClick={onClickToEdit}>Edit this journey</button>
-      <button onClick={onDeleteJourney} class='delete'>
+      <button onClick={onDeleteJourney} class='delete' disabled={isSubmitting}>
         Delete this journey
       </button>
       {deleteError && <p className='delete'>{deleteError}</p>}
