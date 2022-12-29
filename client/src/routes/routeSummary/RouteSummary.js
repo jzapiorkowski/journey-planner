@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Map from '../../components/map/Map';
 import AddressNames from '../../components/addressNames/AddressNames';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import generatePDF from '../../utils/GeneratePDF';
 import './routeSummary.scss';
 import axios from 'axios';
 
 function RouteSummary() {
+  const navigate = useNavigate();
   const params = useParams();
   const id = params.routeId;
   const [journeyData, setJourneyData] = useState({});
@@ -43,6 +44,10 @@ function RouteSummary() {
     );
   }, [destinationPlaceName, originPlaceName, routeInstructions, totalDistance]);
 
+  const onClickToEdit = useCallback(() => {
+    navigate(`/route/${id}/edit`);
+  }, [id, navigate]);
+
   if (fetchError) {
     return (
       <div className='route-summary'>
@@ -69,6 +74,7 @@ function RouteSummary() {
       <p className='distance'>Your route is {totalDistance} kilometers long</p>
 
       <button onClick={getPDF}>GENERATE PDF</button>
+      <button onClick={onClickToEdit}>Edit this journey</button>
       <Map
         originAddressCoordinates={[
           originGeolocation.longtitude,

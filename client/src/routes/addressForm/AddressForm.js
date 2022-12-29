@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './addressForm.scss';
 import axios from 'axios';
 import { validationSchema } from './validationSchema';
 
 function AddressForm() {
-  const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState('');
-
   const navigate = useNavigate();
+  const params = useParams();
+  const id = params.routeId;
+  const [displayGETErrorMessage, setDisplayGETErrorMessage] = useState('');
+  const [journeyData, setJourneyData] = useState({});
+  const [fetchError, setFetchError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  return (
-    <Formik
-      initialValues={{
+  useEffect(() => {
+    if (id) {
+      const getJourney = async () => {
+        setIsLoading(true);
+        try {
+          const { data } = await axios.get(
+            `http://localhost:3001/journey/${id}`
+          );
+
+          setJourneyData({
+            origin: data.origin.address,
+            destination: data.destination.address,
+          });
+          setIsLoading(false);
+        } catch (error) {
+          setFetchError(error.response.data || 'something went wrong');
+        }
+      };
+
+      getJourney();
+    } else {
+      setJourneyData({
         origin: {
           country: '',
           city: '',
@@ -25,25 +48,60 @@ function AddressForm() {
           street: '',
           streetNumber: '',
         },
-      }}
+      });
+    }
+  }, [id]);
+
+  if (fetchError) {
+    return <h1>{fetchError}</h1>;
+  }
+
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
+
+  return (
+    <Formik
+      initialValues={journeyData}
       validationSchema={validationSchema}
       onSubmit={async (values) => {
         const { origin, destination } = values;
 
-        try {
-          const response = await axios.post('http://localhost:3001/journey', {
-            originAddress: origin,
-            destinationAddress: destination,
-          });
+        if (id) {
+          try {
+            const response = await axios.put(
+              `http://localhost:3001/journey/${id}`,
+              {
+                originAddress: origin,
+                destinationAddress: destination,
+              }
+            );
 
-          const { id } = response.data;
+            const { id: journeyId } = response.data;
 
-          navigate(`/route/${id}`);
-        } catch (error) {
-          console.log(error);
-          setDisplayGETErrorMessage(
-            error.response.data || 'something went wrong'
-          );
+            navigate(`/route/${journeyId}`);
+          } catch (error) {
+            console.log(error);
+            setDisplayGETErrorMessage(
+              error.response.data || 'something went wrong'
+            );
+          }
+        } else {
+          try {
+            const response = await axios.post('http://localhost:3001/journey', {
+              originAddress: origin,
+              destinationAddress: destination,
+            });
+
+            const { id } = response.data;
+
+            navigate(`/route/${id}`);
+          } catch (error) {
+            console.log(error);
+            setDisplayGETErrorMessage(
+              error.response.data || 'something went wrong'
+            );
+          }
         }
       }}
     >
