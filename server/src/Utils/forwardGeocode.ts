@@ -1,12 +1,12 @@
 import { Address } from './../Types/journey.type';
 import axios from 'axios';
 
-interface Coordinates {
+export interface Coordinates {
   longtitude: number;
   latitude: number;
 }
 
-interface ErrorType {
+export interface ErrorType {
   message: string;
   status: number;
 }

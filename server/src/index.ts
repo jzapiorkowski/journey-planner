@@ -1,6 +1,12 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import journeyRouter from './Routes/journey.route';
-const cors = require('cors');
+import cors from 'cors';
+import mongoose from 'mongoose';
+
+mongoose.set('strictQuery', false);
+mongoose
+  .connect('mongodb://127.0.0.1:27017/psw-journey-planner')
+  .then(() => console.log('Connected with MongoDB'));
 
 require('dotenv').config();
 

@@ -1,9 +1,10 @@
-import { Journey, Address } from './../Types/journey.type';
+import { Coordinates } from './../Utils/forwardGeocode';
+import { Address } from './../Types/journey.type';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { v4 as UUID } from 'uuid';
 import ForwardGeocode from '../Utils/forwardGeocode';
-
-const journeys: (Journey & { id: string })[] = [];
+import JourneyModel from '../Models/journey.model';
+import { checkCoordinates } from '../Utils/checkCoordinates';
 
 export const postJourney: RequestHandler = async (
   req: Request<
@@ -19,85 +20,49 @@ export const postJourney: RequestHandler = async (
   const originCoords = await ForwardGeocode(originAddress);
   const destinationCoords = await ForwardGeocode(destinationAddress);
 
-  if (
-    'status' in originCoords &&
-    'status' in destinationCoords &&
-    originCoords.status === 404
-  ) {
-    res
-      .status(originCoords.status)
-      .send(`${originCoords.message} origin and destination`);
-    return;
-  }
-
-  if ('status' in originCoords && 'status' in destinationCoords) {
-    res.status(originCoords.status).send(originCoords.message);
-    return;
-  }
-
-  if ('status' in originCoords) {
-    if (originCoords.status === 404) {
-      res.status(originCoords.status).send(`${originCoords.message} origin`);
-      return;
-    }
-
-    res.status(originCoords.status).send(originCoords.message);
-    return;
-  }
-
-  if ('status' in destinationCoords) {
-    if (destinationCoords.status === 404) {
-      res
-        .status(destinationCoords.status)
-        .send(`${destinationCoords.message} destination`);
-      return;
-    }
-
-    res.status(destinationCoords.status).send(destinationCoords.message);
-    return;
-  }
+  checkCoordinates(originCoords, destinationCoords, res);
 
   const journeyUuid = UUID();
 
-  journeys.push({
+  await JourneyModel.create({
     id: journeyUuid,
     origin: {
       address: originAddress,
       coordinates: {
-        longtitude: originCoords.longtitude,
-        latitude: originCoords.latitude,
+        longtitude: (originCoords as Coordinates).longtitude,
+        latitude: (originCoords as Coordinates).latitude,
       },
     },
     destination: {
       address: destinationAddress,
       coordinates: {
-        longtitude: destinationCoords.longtitude,
-        latitude: destinationCoords.latitude,
+        longtitude: (destinationCoords as Coordinates).longtitude,
+        latitude: (destinationCoords as Coordinates).latitude,
       },
     },
   });
 
-  res.status(201).send(JSON.stringify(journeys[journeys.length - 1]));
+  res.status(201).send({ id: journeyUuid });
 };
 
-export const getJourneys: RequestHandler = (
+export const getJourneys: RequestHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const journeys = await JourneyModel.find();
+
   res.send({ journeys });
 };
 
-export const getSpecificJourney: RequestHandler = (
+export const getSpecificJourney: RequestHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const journey = journeys.find(
-    (journey) => journey.id === req.params.journeyId
-  );
+  const journey = await JourneyModel.findOne({ id: req.params.journeyId });
 
-  if (journey === undefined) {
+  if (journey === null) {
     res.status(404).send('could not find queried journey');
   }
 
