@@ -12,6 +12,7 @@ function RouteSummary() {
   const id = params.routeId;
   const [journeyData, setJourneyData] = useState({});
   const [fetchError, setFetchError] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
 
   useEffect(() => {
     const getJourney = async () => {
@@ -48,6 +49,16 @@ function RouteSummary() {
     navigate(`/route/${id}/edit`);
   }, [id, navigate]);
 
+  const onDeleteJourney = useCallback(async () => {
+    try {
+      await axios.delete(`http://localhost:3001/journey/${id}`);
+
+      navigate('/');
+    } catch (error) {
+      setDeleteError(error.response.data || 'something went wrong');
+    }
+  }, [id, navigate]);
+
   if (fetchError) {
     return (
       <div className='route-summary'>
@@ -75,6 +86,10 @@ function RouteSummary() {
 
       <button onClick={getPDF}>GENERATE PDF</button>
       <button onClick={onClickToEdit}>Edit this journey</button>
+      <button onClick={onDeleteJourney} class='delete'>
+        Delete this journey
+      </button>
+      {deleteError && <p className='delete'>{deleteError}</p>}
       <Map
         originAddressCoordinates={[
           originGeolocation.longtitude,
