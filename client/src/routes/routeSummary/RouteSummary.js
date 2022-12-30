@@ -70,6 +70,10 @@ function RouteSummary() {
 
       navigate('/');
     } catch (error) {
+      if (error.response.status === 401) {
+        navigate('/login');
+      }
+
       setDeleteError(error.response.data || 'something went wrong');
     }
   }, [id, navigate]);

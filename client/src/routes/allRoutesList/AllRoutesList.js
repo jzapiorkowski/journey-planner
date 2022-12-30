@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './allRoutesList.scss';
 import routeCard from '../../assets/images/route-card.jpg';
 import axios from 'axios';
@@ -9,6 +9,7 @@ function AllRoutesList() {
   const [fetchError, setFetchError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const navigate = useNavigate();
 
   const getJourneys = useCallback(async (name) => {
     try {
@@ -34,6 +35,10 @@ function AllRoutesList() {
       setAllJourneys(places);
       setIsLoading(false);
     } catch (error) {
+      if (error.response.status === 401) {
+        navigate('/login');
+      }
+
       setFetchError(error?.response?.data || 'something went wrong');
     }
   }, []);

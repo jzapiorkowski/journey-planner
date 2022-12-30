@@ -34,6 +34,10 @@ function AddressForm() {
           });
           setIsLoading(false);
         } catch (error) {
+          if (error.response.status === 401) {
+            navigate('/login');
+          }
+
           setFetchError(error.response.data || 'something went wrong');
         }
       };
