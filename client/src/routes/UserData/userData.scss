@@ -4,4 +4,13 @@
   align-items: center;
   margin-top: 60px;
   gap: 10px;
+  button {
+    width: 200px;
+    height: 40px;
+    grid-row: 2;
+    margin: auto;
+  }
+  .error {
+    color: red;
+  }
 }
