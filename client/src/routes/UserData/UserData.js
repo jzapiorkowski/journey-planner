@@ -24,7 +24,7 @@ function UserData() {
           navigate('/login');
         }
 
-        setFetchError(error.response.data || 'something went wrong');
+        setFetchError(error?.response?.data || 'something went wrong');
       }
     };
 

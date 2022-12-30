@@ -28,7 +28,7 @@ function RouteSummary() {
         );
         setJourneyData(data);
       } catch (error) {
-        setFetchError(error.response.data || 'something went wrong');
+        setFetchError(error?.response?.data || 'something went wrong');
       }
     };
 
