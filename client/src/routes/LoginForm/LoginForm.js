@@ -51,7 +51,9 @@ export default function LoginForm() {
               navigate('/user');
             }
           } catch (error) {
-            setloginError(error.response.data || 'something went wrong');
+            setloginError(
+              error?.response?.data?.message || 'something went wrong'
+            );
           }
         }}
       >
