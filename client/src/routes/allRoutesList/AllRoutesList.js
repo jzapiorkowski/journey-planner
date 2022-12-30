@@ -11,37 +11,40 @@ function AllRoutesList() {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
-  const getJourneys = useCallback(async (name) => {
-    try {
-      setIsLoading(true);
-      const {
-        data: { journeys },
-      } = await axios.get('http://localhost:3001/journeys', {
-        headers: {
-          'auth-token': sessionStorage.getItem('auth-token'),
-        },
-        params: { name },
-      });
+  const getJourneys = useCallback(
+    async (name) => {
+      try {
+        setIsLoading(true);
+        const {
+          data: { journeys },
+        } = await axios.get('http://localhost:3001/journeys', {
+          headers: {
+            'auth-token': sessionStorage.getItem('auth-token'),
+          },
+          params: { name },
+        });
 
-      const places = journeys.map((journey) => ({
-        id: journey.id,
-        origin_place_name: `${journey.origin.place_name.substring(0, 30)}...`,
-        destination_place_name: `${journey.destination.place_name.substring(
-          0,
-          30
-        )}...`,
-      }));
+        const places = journeys.map((journey) => ({
+          id: journey.id,
+          origin_place_name: `${journey.origin.place_name.substring(0, 30)}...`,
+          destination_place_name: `${journey.destination.place_name.substring(
+            0,
+            30
+          )}...`,
+        }));
 
-      setAllJourneys(places);
-      setIsLoading(false);
-    } catch (error) {
-      if (error.response.status === 401) {
-        navigate('/login');
+        setAllJourneys(places);
+        setIsLoading(false);
+      } catch (error) {
+        if (error.response.status === 401) {
+          navigate('/login');
+        }
+
+        setFetchError(error?.response?.data || 'something went wrong');
       }
-
-      setFetchError(error?.response?.data || 'something went wrong');
-    }
-  }, []);
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     getJourneys();

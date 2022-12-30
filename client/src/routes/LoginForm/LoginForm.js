@@ -9,7 +9,6 @@ export default function LoginForm() {
   const [loginError, setloginError] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.pathname);
 
   const navigateToRegister = useCallback(() => {
     navigate('/register');
@@ -52,7 +51,6 @@ export default function LoginForm() {
               navigate('/user');
             }
           } catch (error) {
-            console.log(error);
             setloginError(error.response.data || 'something went wrong');
           }
         }}

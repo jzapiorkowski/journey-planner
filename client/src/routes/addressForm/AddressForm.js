@@ -59,7 +59,7 @@ function AddressForm() {
         },
       });
     }
-  }, [id]);
+  }, [id, navigate]);
 
   if (fetchError) {
     return <h1>{fetchError}</h1>;
@@ -95,7 +95,6 @@ function AddressForm() {
 
             navigate(`/route/${journeyId}`);
           } catch (error) {
-            console.log(error);
             setDisplayGETErrorMessage(
               error.response.data || 'something went wrong'
             );
@@ -119,7 +118,6 @@ function AddressForm() {
 
             navigate(`/route/${id}`);
           } catch (error) {
-            console.log(error);
             setDisplayGETErrorMessage(
               error.response.data || 'something went wrong'
             );
