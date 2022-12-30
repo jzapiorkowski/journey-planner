@@ -22,12 +22,7 @@ export const loginUser: RequestHandler = async (
     return;
   }
 
-  console.log('pas', password);
-  console.log('hash', user.password);
-
   const passwordMatch = await bcrypt.compare(password, user.password);
-
-  console.log(passwordMatch);
 
   if (!passwordMatch) {
     res.status(403).send({ message: 'login or password is incorrect' });
@@ -80,8 +75,6 @@ export const registerUser: RequestHandler = async (
 
     res.json({ token });
   } catch (error) {
-    console.log(error);
-
     res.status(400).send('user already exists');
   }
 };

@@ -25,8 +25,6 @@ export const postJourney: RequestHandler = async (
     user: { login },
   } = req.body;
 
-  console.log(originAddress);
-
   const originCoords = await ForwardGeocode(originAddress);
   const destinationCoords = await ForwardGeocode(destinationAddress);
 
