@@ -19,7 +19,7 @@ const JourneySchema = new mongoose.Schema<Journey>({
       country: { type: String, required: true },
       city: { type: String, required: true },
       street: { type: String, required: true },
-      streetNumber: { type: String, required: true },
+      streetNumber: { type: String, required: false },
     },
     coordinates: {
       longtitude: { type: String, required: true },
@@ -32,7 +32,7 @@ const JourneySchema = new mongoose.Schema<Journey>({
       country: { type: String, required: true },
       city: { type: String, required: true },
       street: { type: String, required: true },
-      streetNumber: { type: String, required: true },
+      streetNumber: { type: String, required: false },
     },
     coordinates: {
       longtitude: { type: String, required: true },
