@@ -3,6 +3,7 @@ import { User } from '../Types/user.type';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { v4 as UUID } from 'uuid';
+import RefreshTokenModel from '../Models/refreshToken.model';
 
 export const loginUser: RequestHandler = async (
   req: Request,
@@ -33,6 +34,10 @@ export const loginUser: RequestHandler = async (
     }
   );
 
+  await RefreshTokenModel.create({
+    token,
+  });
+
   res.status(200).send({ token });
 };
 
@@ -60,6 +65,10 @@ export const registerUser: RequestHandler = async (
       }
     );
 
+    await RefreshTokenModel.create({
+      token,
+    });
+
     res.json({ token });
   } catch (error) {
     res.status(400).send('user already exists');
@@ -83,4 +92,23 @@ export const getUserData: RequestHandler = async (
   }
 
   res.status(200).send({ login: user.login });
+};
+
+export const logoutUser: RequestHandler = async (
+  req: Request<any, any, { user: Partial<User> }>,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.headers['auth-token'] as string;
+
+  const deleteResponse = await RefreshTokenModel.deleteOne({
+    token,
+  });
+
+  if (!deleteResponse.deletedCount) {
+    res.sendStatus(400);
+    return;
+  }
+
+  res.sendStatus(200);
 };
