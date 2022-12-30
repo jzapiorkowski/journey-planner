@@ -40,7 +40,6 @@ function generatePDF(
   doc.text('Route instructions:', 20, 160);
 
   doc.setFont(undefined, 'normal');
-  console.log(routeInstructions.length);
 
   doc.text(routeInstructions.slice(0, 21).join('\n'), 20, 170);
 
