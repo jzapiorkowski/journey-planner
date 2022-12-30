@@ -4,9 +4,10 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import { v4 as UUID } from 'uuid';
 import RefreshTokenModel from '../Models/refreshToken.model';
+import bcrypt from 'bcrypt';
 
 export const loginUser: RequestHandler = async (
-  req: Request,
+  req: Request<any, any, User>,
   res: Response,
   next: NextFunction
 ) => {
@@ -21,8 +22,15 @@ export const loginUser: RequestHandler = async (
     return;
   }
 
-  if (password !== user.password) {
-    res.sendStatus(403);
+  console.log('pas', password);
+  console.log('hash', user.password);
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  console.log(passwordMatch);
+
+  if (!passwordMatch) {
+    res.status(403).send({ message: 'login or password is incorrect' });
     return;
   }
 
@@ -47,6 +55,7 @@ export const registerUser: RequestHandler = async (
   next: NextFunction
 ) => {
   const { login, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const userUuid = UUID();
 
@@ -54,7 +63,7 @@ export const registerUser: RequestHandler = async (
     const user = await UserModel.create({
       id: userUuid,
       login: login,
-      password: password,
+      password: hashedPassword,
     });
 
     const token = jwt.sign(
@@ -71,6 +80,8 @@ export const registerUser: RequestHandler = async (
 
     res.json({ token });
   } catch (error) {
+    console.log(error);
+
     res.status(400).send('user already exists');
   }
 };
