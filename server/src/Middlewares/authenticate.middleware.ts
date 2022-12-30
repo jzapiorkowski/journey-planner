@@ -14,8 +14,6 @@ export const verifyUser: RequestHandler = async (
       token,
     });
 
-    console.log(refreshToken);
-
     if (refreshToken === null) {
       res.sendStatus(401);
       return;
