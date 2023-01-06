@@ -12,7 +12,7 @@ function UserData() {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const { data } = await axios.get('http://localhost:3001/user', {
+        const { data } = await axios.get('https://localhost:3001/user', {
           headers: {
             'auth-token': sessionStorage.getItem('auth-token'),
           },
@@ -34,7 +34,7 @@ function UserData() {
   const handleLogout = useCallback(async () => {
     try {
       await axios.post(
-        'http://localhost:3001/logout',
+        'https://localhost:3001/logout',
         {},
         {
           headers: {

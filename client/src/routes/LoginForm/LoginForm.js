@@ -32,7 +32,7 @@ export default function LoginForm() {
             if (location.pathname === '/login') {
               const {
                 data: { token },
-              } = await axios.post(`http://localhost:3001/login`, {
+              } = await axios.post(`https://localhost:3001/login`, {
                 login,
                 password,
               });
@@ -42,7 +42,7 @@ export default function LoginForm() {
             } else {
               const {
                 data: { token },
-              } = await axios.post(`http://localhost:3001/register`, {
+              } = await axios.post(`https://localhost:3001/register`, {
                 login,
                 password,
               });

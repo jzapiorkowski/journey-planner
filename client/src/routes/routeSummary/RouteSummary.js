@@ -19,7 +19,7 @@ function RouteSummary() {
     const getJourney = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:3001/journey/${id}`,
+          `https://localhost:3001/journey/${id}`,
           {
             headers: {
               'auth-token': sessionStorage.getItem('auth-token'),
@@ -61,7 +61,7 @@ function RouteSummary() {
   const onDeleteJourney = useCallback(async () => {
     try {
       setIsSubmitting(true);
-      await axios.delete(`http://localhost:3001/journey/${id}`, {
+      await axios.delete(`https://localhost:3001/journey/${id}`, {
         headers: {
           'auth-token': sessionStorage.getItem('auth-token'),
         },
