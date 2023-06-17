@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "dotenv nodemon"
+    "start": "dotenv nodemon",
+    "build": "tsc"
   },
   "nodemonConfig": {
     "watch": [
@@ -20,7 +21,9 @@
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^9.0.0",
+    "keycloak-connect": "^21.1.1",
     "mongoose": "^6.8.2",
+    "tsc": "^2.0.4",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

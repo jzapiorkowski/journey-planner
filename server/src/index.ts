@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import userRouter from './Routes/user.route';
 import fs from 'fs';
 import https from 'https';
+import { keycloak } from './keycloak.config';
 
 const credentials = {
   key: fs.readFileSync('/home/kuba/plik_klucz'),
@@ -31,6 +32,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(keycloak.middleware());
 
 app.use(journeyRouter);
 app.use(userRouter);
