@@ -13,17 +13,13 @@ export const postJourney: RequestHandler = async (
     {
       originAddress: Address;
       destinationAddress: Address;
-      user: { login: string };
     }
   >,
   res: Response,
   next: NextFunction
 ) => {
-  const {
-    originAddress,
-    destinationAddress,
-    user: { login },
-  } = req.body;
+  const { originAddress, destinationAddress } = req.body;
+  const { login } = req.query;
 
   const originCoords = await ForwardGeocode(originAddress);
   const destinationCoords = await ForwardGeocode(destinationAddress);
@@ -61,8 +57,7 @@ export const getJourneys: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { name = '' } = req.query;
-  const { login } = req.body.user;
+  const { name = '', login } = req.query;
 
   const journeys = await JourneyModel.find({
     userLogin: login,
@@ -79,12 +74,22 @@ export const getJourneys: RequestHandler = async (
   res.send({ journeys });
 };
 
+export const getAllJourneys: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const journeys = await JourneyModel.find({});
+
+  return res.send(journeys);
+};
+
 export const getSpecificJourney: RequestHandler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { login } = req.body.user;
+  const { login } = req.query;
   const journey = await JourneyModel.findOne({
     userLogin: login,
     id: req.params.journeyId,
@@ -103,7 +108,7 @@ export const updateJourney: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { login } = req.body.user;
+  const { login } = req.query;
 
   const journey = await JourneyModel.findOne({
     userLogin: login,
@@ -151,7 +156,7 @@ export const deleteJourney: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { login } = req.body.user;
+  const { login } = req.query;
 
   const journey = await JourneyModel.deleteOne({
     userLogin: login,

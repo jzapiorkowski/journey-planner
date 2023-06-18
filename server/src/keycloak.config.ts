@@ -1,15 +1,13 @@
 import Keycloak from 'keycloak-connect';
 
-export const keycloak = new Keycloak(
-  {},
-  {
-    // clientId: 'myclient',
-    'bearer-only': true,
-    realm: 'myrealm',
-    'auth-server-url': 'http://keycloak:8080',
-    'ssl-required': 'external',
-    resource: 'myclient',
-    // 'public-client': true,
-    'confidential-port': 8080,
-  }
-);
+const config = {
+  'confidential-port': 0,
+  realm: 'myrealm',
+  'auth-server-url': 'http://localhost:8080/',
+  'ssl-required': 'external',
+  resource: 'myapiclient',
+  'bearer-only': true,
+  'public-client': true,
+};
+
+export const keycloak = new Keycloak({}, config);

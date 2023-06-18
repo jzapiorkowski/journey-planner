@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 import './addressForm.scss';
 import axios from 'axios';
+import { useKeycloak } from '@react-keycloak/web';
 import { validationSchema } from './validationSchema';
 
 function AddressForm() {
@@ -13,36 +14,34 @@ function AddressForm() {
   const [journeyData, setJourneyData] = useState({});
   const [fetchError, setFetchError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { keycloak, initialized } = useKeycloak();
 
-  useEffect(() => {
+  const getJourney = useCallback(async () => {
     if (id) {
-      const getJourney = async () => {
-        setIsLoading(true);
-        try {
-          const { data } = await axios.get(
-            `https://localhost:3001/journey/${id}`,
-            {
-              headers: {
-                'auth-token': sessionStorage.getItem('auth-token'),
-              },
-            }
-          );
+      setIsLoading(true);
+      try {
+        const { preferred_username: login } = keycloak.tokenParsed;
 
-          setJourneyData({
-            origin: data.origin.address,
-            destination: data.destination.address,
-          });
-          setIsLoading(false);
-        } catch (error) {
-          if (error.response.status === 401) {
-            navigate('/login');
+        const { data } = await axios.get(
+          `http://localhost:3001/journey/${id}`,
+          {
+            headers: { Authorization: `Bearer ${keycloak.token}` },
+            params: { login },
           }
+        );
 
-          setFetchError(error?.response?.data || 'something went wrong');
+        setJourneyData({
+          origin: data.origin.address,
+          destination: data.destination.address,
+        });
+        setIsLoading(false);
+      } catch (error) {
+        if (error.response.status === 401) {
+          navigate('/login');
         }
-      };
 
-      getJourney();
+        setFetchError(error?.response?.data || 'something went wrong');
+      }
     } else {
       setJourneyData({
         origin: {
@@ -59,7 +58,18 @@ function AddressForm() {
         },
       });
     }
-  }, [id, navigate]);
+  }, [id, keycloak.token, keycloak.tokenParsed, navigate]);
+
+  useEffect(() => {
+    if (initialized) {
+      if (keycloak.authenticated) {
+        if (keycloak.hasRealmRole('journeys')) getJourney();
+        else setFetchError('Access denied');
+      } else {
+        navigate('/login');
+      }
+    }
+  }, [getJourney, initialized, keycloak, navigate]);
 
   if (fetchError) {
     return <h1>{fetchError}</h1>;
@@ -78,6 +88,8 @@ function AddressForm() {
 
         if (id) {
           try {
+            const { preferred_username: login } = keycloak.tokenParsed;
+
             const response = await axios.put(
               `http://localhost:3001/journey/${id}`,
               {
@@ -85,9 +97,8 @@ function AddressForm() {
                 destinationAddress: destination,
               },
               {
-                headers: {
-                  'auth-token': sessionStorage.getItem('auth-token'),
-                },
+                headers: { Authorization: `Bearer ${keycloak.token}` },
+                params: { login },
               }
             );
 
@@ -101,6 +112,8 @@ function AddressForm() {
           }
         } else {
           try {
+            const { preferred_username: login } = keycloak.tokenParsed;
+
             const response = await axios.post(
               'http://localhost:3001/journey',
               {
@@ -108,9 +121,8 @@ function AddressForm() {
                 destinationAddress: destination,
               },
               {
-                headers: {
-                  'auth-token': sessionStorage.getItem('auth-token'),
-                },
+                headers: { Authorization: `Bearer ${keycloak.token}` },
+                params: { login },
               }
             );
 

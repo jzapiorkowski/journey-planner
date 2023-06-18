@@ -9,41 +9,45 @@ function UserData() {
   const [fetchError, setFetchError] = useState(null);
   const [userData, setUserData] = useState({});
   const { keycloak, initialized } = useKeycloak();
+  const [allJourneysCount, setAllJourneysCount] = useState(0);
+  const [Loading, setLoading] = useState(false);
 
-  const getUserData = useCallback(async () => {
+  const getAllJourneys = useCallback(async () => {
     try {
-      const { data } = await axios.get('https://localhost:3001/user', {
-        headers: {
-          'auth-token': sessionStorage.getItem('auth-token'),
-        },
+      setLoading(true);
+      const { data } = await axios.get('http://localhost:3001/alljourneys', {
+        headers: { Authorization: `Bearer ${keycloak.token}` },
       });
-      setUserData({ ...data });
+      setAllJourneysCount(data.length);
+      setLoading(false);
     } catch (error) {
-      console.log(error);
-      if (error.response.status === 401) {
-        navigate('/login');
-      }
       setFetchError(error?.response?.data || 'something went wrong');
+      setLoading(false);
     }
-  }, [navigate]);
-
-  // useEffect(() => {
-  //   if (initialized) {
-  //     if (!keycloak.authenticated) {
-  //       navigate('/login');
-  //     } else {
-  //       getUserData();
-  //     }
-  //   }
-  // }, [getUserData, initialized, keycloak.authenticated, navigate]);
+  }, [keycloak.token]);
 
   useEffect(() => {
-    console.log(keycloak.authenticated, 'authenticated');
     console.log(initialized, 'initialized');
-
-    const x = keycloak.tokenParsed;
-    console.log(x);
+    console.log(keycloak.authenticated, 'authenticated');
+    if (initialized) {
+      if (!keycloak.authenticated) {
+        navigate('/login');
+      } else {
+        const { name } = keycloak.tokenParsed;
+        setUserData({ name });
+      }
+    }
   }, [initialized, keycloak.authenticated, keycloak.tokenParsed, navigate]);
+
+  useEffect(() => {
+    if (
+      initialized &&
+      keycloak.authenticated &&
+      keycloak.hasRealmRole('admin')
+    ) {
+      getAllJourneys();
+    }
+  }, [getAllJourneys, initialized, keycloak]);
 
   const handleLogout = useCallback(() => keycloak.logout(), [keycloak]);
 
@@ -51,10 +55,20 @@ function UserData() {
     return <h1>{fetchError}</h1>;
   }
 
+  if (Loading) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div className='user-data'>
       <h1>You're logged in as:</h1>
-      <h2>{userData.login}</h2>
+      <h2>{userData.name}</h2>
+      {keycloak.hasRealmRole('admin') && (
+        <>
+          <p>Wow, you're an admin!</p>
+          <p>There are {allJourneysCount} route searches in total</p>
+        </>
+      )}
       <button onClick={() => keycloak.accountManagement()}>
         manage account
       </button>

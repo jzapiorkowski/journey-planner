@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './allRoutesList.scss';
 import routeCard from '../../assets/images/route-card.jpg';
 import axios from 'axios';
+import { useKeycloak } from '@react-keycloak/web';
 
 function AllRoutesList() {
   const [allJourneys, setAllJourneys] = useState([]);
@@ -10,18 +11,20 @@ function AllRoutesList() {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const { keycloak, initialized } = useKeycloak();
 
   const getJourneys = useCallback(
     async (name) => {
       try {
         setIsLoading(true);
+        await keycloak.updateToken(30);
+        const { preferred_username: login } = keycloak.tokenParsed;
+
         const {
           data: { journeys },
-        } = await axios.get('https://localhost:3001/journeys', {
-          headers: {
-            'auth-token': sessionStorage.getItem('auth-token'),
-          },
-          params: { name },
+        } = await axios.get('http://localhost:3001/journeys', {
+          headers: { Authorization: `Bearer ${keycloak.token}` },
+          params: { name, login },
         });
 
         const places = journeys.map((journey) => ({
@@ -43,12 +46,25 @@ function AllRoutesList() {
         setFetchError(error?.response?.data || 'something went wrong');
       }
     },
-    [navigate]
+    [keycloak, navigate]
   );
 
   useEffect(() => {
-    getJourneys();
-  }, [getJourneys]);
+    if (initialized) {
+      if (keycloak.authenticated) {
+        getJourneys();
+      } else {
+        navigate('/login');
+      }
+    }
+  }, [
+    getJourneys,
+    initialized,
+    keycloak,
+    keycloak.authenticated,
+    keycloak.tokenParsed,
+    navigate,
+  ]);
 
   const routeCards = useMemo(
     () =>
