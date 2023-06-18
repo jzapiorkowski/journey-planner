@@ -2,63 +2,77 @@ import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './userData.scss';
+import { useKeycloak } from '@react-keycloak/web';
 
 function UserData() {
   const navigate = useNavigate();
   const [fetchError, setFetchError] = useState(null);
   const [userData, setUserData] = useState({});
-  const [logoutError, setLogoutError] = useState(null);
+  const { keycloak, initialized } = useKeycloak();
+  const [allJourneysCount, setAllJourneysCount] = useState(0);
+  const [Loading, setLoading] = useState(false);
+
+  const getAllJourneys = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get('http://localhost:3001/alljourneys', {
+        headers: { Authorization: `Bearer ${keycloak.token}` },
+      });
+      setAllJourneysCount(data.length);
+      setLoading(false);
+    } catch (error) {
+      setFetchError(error?.response?.data || 'something went wrong');
+      setLoading(false);
+    }
+  }, [keycloak.token]);
 
   useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const { data } = await axios.get('https://localhost:3001/user', {
-          headers: {
-            'auth-token': sessionStorage.getItem('auth-token'),
-          },
-        });
-
-        setUserData({ ...data });
-      } catch (error) {
-        if (error.response.status === 401) {
-          navigate('/login');
-        }
-
-        setFetchError(error?.response?.data || 'something went wrong');
+    console.log(initialized, 'initialized');
+    console.log(keycloak.authenticated, 'authenticated');
+    if (initialized) {
+      if (!keycloak.authenticated) {
+        navigate('/login');
+      } else {
+        const { name } = keycloak.tokenParsed;
+        setUserData({ name });
       }
-    };
-
-    getUserData();
-  }, [navigate]);
-
-  const handleLogout = useCallback(async () => {
-    try {
-      await axios.post(
-        'https://localhost:3001/logout',
-        {},
-        {
-          headers: {
-            'auth-token': sessionStorage.getItem('auth-token'),
-          },
-        }
-      );
-
-      navigate('/login');
-    } catch (error) {
-      setLogoutError(error.response.data || 'something went wrong');
     }
-  }, [navigate]);
+  }, [initialized, keycloak.authenticated, keycloak.tokenParsed, navigate]);
+
+  useEffect(() => {
+    if (
+      initialized &&
+      keycloak.authenticated &&
+      keycloak.hasRealmRole('admin')
+    ) {
+      getAllJourneys();
+    }
+  }, [getAllJourneys, initialized, keycloak]);
+
+  const handleLogout = useCallback(() => keycloak.logout(), [keycloak]);
 
   if (fetchError) {
     return <h1>{fetchError}</h1>;
   }
 
+  if (Loading) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
     <div className='user-data'>
       <h1>You're logged in as:</h1>
-      <h2>{userData.login}</h2>
+      <h2>{userData.name}</h2>
+      {keycloak.hasRealmRole('admin') && (
+        <>
+          <p>Wow, you're an admin!</p>
+          <p>There are {allJourneysCount} route searches in total</p>
+        </>
+      )}
+      <button onClick={() => keycloak.accountManagement()}>
+        manage account
+      </button>
       <button onClick={handleLogout}>Log out</button>
-      <p className='error'>{logoutError}</p>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import generatePDF from '../../utils/GeneratePDF';
 import './routeSummary.scss';
 import axios from 'axios';
+import { useKeycloak } from '@react-keycloak/web';
 
 function RouteSummary() {
   const navigate = useNavigate();
@@ -14,26 +15,31 @@ function RouteSummary() {
   const [fetchError, setFetchError] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { keycloak, initialized } = useKeycloak();
+
+  const getJourney = useCallback(async () => {
+    try {
+      const { preferred_username: login } = keycloak.tokenParsed;
+      const { data } = await axios.get(`http://localhost:3001/journey/${id}`, {
+        headers: { Authorization: `Bearer ${keycloak.token}` },
+        params: { login },
+      });
+      setJourneyData(data);
+    } catch (error) {
+      setFetchError(error?.response?.data || 'something went wrong');
+    }
+  }, [id, keycloak.token, keycloak.tokenParsed]);
 
   useEffect(() => {
-    const getJourney = async () => {
-      try {
-        const { data } = await axios.get(
-          `https://localhost:3001/journey/${id}`,
-          {
-            headers: {
-              'auth-token': sessionStorage.getItem('auth-token'),
-            },
-          }
-        );
-        setJourneyData(data);
-      } catch (error) {
-        setFetchError(error?.response?.data || 'something went wrong');
+    if (initialized) {
+      if (keycloak.authenticated) {
+        if (keycloak.hasRealmRole('journeys')) getJourney();
+        else setFetchError('Access denied');
+      } else {
+        navigate('/login');
       }
-    };
-
-    getJourney();
-  }, [id]);
+    }
+  }, [getJourney, initialized, keycloak, navigate]);
 
   const originPlaceName = journeyData?.origin?.address || '';
   const destinationPlaceName = journeyData?.destination?.address || '';
@@ -60,11 +66,10 @@ function RouteSummary() {
 
   const onDeleteJourney = useCallback(async () => {
     try {
+      const { preferred_username: login } = keycloak.tokenParsed;
       setIsSubmitting(true);
-      await axios.delete(`https://localhost:3001/journey/${id}`, {
-        headers: {
-          'auth-token': sessionStorage.getItem('auth-token'),
-        },
+      await axios.delete(`http://localhost:3001/journey/${id}`, {
+        params: { login },
       });
       setIsSubmitting(false);
 
@@ -76,7 +81,7 @@ function RouteSummary() {
 
       setDeleteError(error.response.data || 'something went wrong');
     }
-  }, [id, navigate]);
+  }, [id, keycloak.tokenParsed, navigate]);
 
   if (fetchError) {
     return (
